@@ -15,12 +15,20 @@
 <ion-content>
   <ion-searchbar [(ngModel)]="searchTerm" (search)="searchRoutes()" (ionClear)="getDefualtRoutes()">
   </ion-searchbar>
+  <ion-segment [(ngModel)]="segment" padding (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="All">
+      <ion-label>All routes</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="My">
+      <ion-label>My routes</ion-label>
+    </ion-segment-button>
+  </ion-segment>
   <ion-list>
     <ion-item *ngFor="let route of routes" [routerLink]="'/detail-route/' + route.id">
-      {{route.routeName}}
-      <!--div class="item-note" slot="end">
-        {{item.note}}
-      </div>-->
+      <ion-label>{{route.routeName}}</ion-label>
+      <div *ngIf="route.id === myActiveRouteId">
+        <ion-icon color="primary" name="checkmark-circle-outline" size="small" slot="start"></ion-icon>
+      </div>
     </ion-item>
   </ion-list>
 </ion-content>

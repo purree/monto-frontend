@@ -38,11 +38,6 @@ export class AppComponent {
       icon: 'search'
     },
     {
-      title: 'My Routes',
-      url: '/my-routes',
-      icon: 'map'
-    },
-    {
       title: 'Settings',
       url: '/settings',
       icon: 'settings'

@@ -13,7 +13,13 @@ export class ApiService {
   private userHref: any;
 
   constructor(private http: HttpClient, private storage: Storage) {
-    this.storage.get('userHref').then((userHref) => this.userHref = userHref);
+    this.setUser();
+  }
+
+  setUser() {
+    this.storage.get('userHref').then((userHref) => {
+      this.userHref = userHref
+    });
   }
 
   getAttraction(id: any) {

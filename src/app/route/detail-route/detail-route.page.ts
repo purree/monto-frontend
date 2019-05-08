@@ -32,4 +32,10 @@ export class DetailRoutePage implements OnInit {
     });
   }
 
+  setActiveRoute() {
+    this.api.setMyActiveRoute(this.route._links.self.href).subscribe(data => {
+      console.log(data);
+    });
+  }
+
 }
