@@ -14,6 +14,8 @@ export class AttractionDetailPage implements OnInit {
   @ViewChild('map') mapElement: ElementRef;
   map: any;
   private attraction: any;
+  private activeRoute: any;
+  private inActiveRoute: boolean = true;
 
   constructor(private route: ActivatedRoute, private api: ApiService) { }
 
@@ -24,7 +26,8 @@ export class AttractionDetailPage implements OnInit {
     let attractionId = this.route.snapshot.paramMap.get('id');
     this.api.getAttraction(attractionId).subscribe(data => {
       this.attraction = data;
-      this.api.getAttractionPosition(this.attraction).subscribe(data => { 
+      this.attraction.id = attractionId;
+      this.api.getAttractionPosition(this.attraction).subscribe(data => {
         this.attraction.position = data;
         this.loadMap();
       });
@@ -36,6 +39,32 @@ export class AttractionDetailPage implements OnInit {
         let creatorResponse = <any>data;
         this.attraction.creators = creatorResponse._embedded.creators;
       });
+      this.api.getMyActiveRoute().then(val => val.subscribe(data => {
+        this.activeRoute = data;
+        let selfLink = this.activeRoute._links.self.href;
+        this.activeRoute.id = selfLink.substring(selfLink.lastIndexOf('/') + 1, selfLink.length);
+        this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
+          let activeRouteAttractionsRes = <any>data;
+          this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
+          this.inActiveRoute = !!this.activeRoute.attractions.find(x => x._links.self.href == this.attraction._links.self.href);
+        });
+      }));
+    });
+  }
+
+  addAttractionToRoute() {
+    this.api.addAttractionToRoute(this.activeRoute._links.attractions.href, this.attraction._links.self.href).subscribe(data => {
+      this.activeRoute.attractions.push(this.attraction);
+      this.inActiveRoute = true;
+    });
+  }
+
+  removeAttractionFromRoute(attractionId) {
+    this.api.removeAttractionFromRoute(this.activeRoute.id, attractionId).subscribe(data => {
+      if (!data) {
+        this.activeRoute.attractions = this.activeRoute.attractions.filter(x => x.id !== attractionId);
+        this.inActiveRoute = false;
+      }
     });
   }
 
@@ -46,8 +75,8 @@ export class AttractionDetailPage implements OnInit {
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       disableDefaultUI: true,
-      panControl:false,
-      zoomControl:false,
+      panControl: false,
+      zoomControl: false,
       draggable: false,
       scrollwheel: false,
       disableDoubleClickZoom: true

@@ -16,8 +16,8 @@ export class ApiService {
     this.setUser();
   }
 
-  setUser() {
-    this.storage.get('userHref').then((userHref) => {
+  async setUser() {
+    await this.storage.get('userHref').then((userHref) => {
       this.userHref = userHref
     });
   }
@@ -51,7 +51,9 @@ export class ApiService {
   }
 
   getMyActiveRoute() {
-    return this.http.get(`${this.userHref}/activeRoute`);
+    return this.storage.get('userHref').then(userHref => {
+      return this.http.get(`${this.userHref}/activeRoute`);
+    })
   }
 
   setMyActiveRoute(activeRoute) {
@@ -66,6 +68,10 @@ export class ApiService {
       }
     }
     return this.http.put(`${this.userHref}/activeRoute`, body);
+  }
+
+  getMyActiveRouteAttractions(activeRoute:any) {
+    return this.http.get(activeRoute._links.attractions.href);
   }
 
   getRoutes() {
@@ -95,6 +101,26 @@ export class ApiService {
       })
     };
     return this.http.post(`${apiUrl}/routes`, routeData, httpOptions);
+  }
+
+  addAttractionToRoute(activeRoutesHref, attractionHref) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    let body = {
+      "_links": {
+        "attractions": [
+          attractionHref
+        ]
+      }
+    }
+    return this.http.patch(activeRoutesHref, body, httpOptions);
+  }
+
+  removeAttractionFromRoute(routeId, attractionId) {
+    return this.http.delete(`${apiUrl}/routes/${routeId}/attractions/${attractionId}`);
   }
 
 }

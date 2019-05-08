@@ -20,13 +20,27 @@ export class HomePage {
   address: string;
   attractionsResponse: any;
   attraction: any;
+  activeRoute: any;
 
   constructor(
     private http: HttpClient,
     private api: ApiService,
     private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder
-    ) {
+  ) {}
+
+  ionViewWillEnter() {
+    this.api.getMyActiveRoute().then(val => val.subscribe(data => {
+      if (data) {
+        this.activeRoute = data;
+        let selfLink = this.activeRoute._links.self.href;
+        this.activeRoute.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
+        this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
+          let activeRouteAttractionsRes = <any>data;
+          this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
+        })
+      }
+    }));
   }
 
   ngOnInit() {
@@ -36,7 +50,7 @@ export class HomePage {
   loadMap() {
     this.geolocation.getCurrentPosition().then((resp) => {
       //let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      let latLng = new google.maps.LatLng(59.3251467,18.0679113);
+      let latLng = new google.maps.LatLng(59.3251467, 18.0679113);
       let mapOptions = {
         center: latLng,
         zoom: 15,
@@ -98,8 +112,25 @@ export class HomePage {
       });
   }
 
+  addAttractionToRoute() {
+    this.api.addAttractionToRoute(this.activeRoute._links.attractions.href, this.attraction._links.self.href).subscribe(data => {
+      this.activeRoute.attractions.push(this.attraction);
+      this.attraction.inRoute = true;
+    });
+  }
+
+  removeAttractionFromRoute(attractionId) {
+    this.api.removeAttractionFromRoute(this.activeRoute.id, attractionId).subscribe(data => {
+      if (!data) {
+        this.activeRoute.attractions = this.activeRoute.attractions.filter(x => x.id !== attractionId);
+        this.attraction.inRoute = false;
+      }
+    });
+  }
+
   onSelect(item: any): void {
     this.attraction = item;
+    this.attraction.inRoute = !!this.activeRoute.attractions.find(x => x._links.self.href == this.attraction._links.self.href);
   }
 
   unselectAttraction(): void {

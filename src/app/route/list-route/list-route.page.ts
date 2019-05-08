@@ -17,13 +17,13 @@ export class ListRoutePage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.api.getMyActiveRoute().subscribe(data => {
+    this.api.getMyActiveRoute().then(val => val.subscribe(data => {
       if(data){
         let activeRouteResonse = <any> data;
         let selfLink = activeRouteResonse._links.self.href;
         this.myActiveRouteId = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
       }
-    });
+    }));
   }
 
   ngOnInit() {
