@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Statues
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-searchbar [(ngModel)]="searchTerm" (search)="searchAttractions()" (ionClear)="getDefualtAttractions()">
+  </ion-searchbar>
+  <ion-list>
+    <ion-item *ngFor="let attraction of attractions" [routerLink]="'/list/' + attraction.id">
+      {{attraction.title}}
+      <div class="item-note" slot="end">
+        {{attraction.titleEnglish}}
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>

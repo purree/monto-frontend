@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>My routes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="'/create-route'">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-radio-group [value]="myActiveRoute">
+      <!--<ion-item *ngFor="let route of myRoutes" [routerLink]="'/detail-route/' + route.id">-->
+      <ion-item *ngFor="let route of myRoutes">
+        <ion-label>{{route.routeName }}</ion-label>
+        <ion-radio slot="start" (ionSelect)="activeRouteChange($event)" [value]="route._links.self.href"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+</ion-content>

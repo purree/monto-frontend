@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ route?.routeName }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <h2>{{ route?.routeName }}</h2>
+  <p>{{ route?.description }}</p>
+  <p>{{ route?.creator?.username }}</p>
+
+  <ul>
+    <li *ngFor="let attraction of route?.attractions">
+      {{ attraction.title }}
+    </li>
+  </ul>
+
+  <ul>
+      <li *ngFor="let rating of route?.ratings">
+        {{ rating }}
+      </li>
+    </ul>
+</ion-content>

@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{ attraction?.title }}
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <div class="map-wrapper">
+      <div #map id="map"></div>
+    </div>
+  </ion-card>
+  <h2>{{ attraction?.title }}</h2>
+  <h4>{{ attraction?.titleEnglish }}</h4>
+  <p>{{ attraction?.description }}</p>
+  <p>{{ attraction?.position?.latitude }}, {{ attraction?.position?.longitude }}</p>
+  <ul>
+    <li *ngFor="let creator of attraction?.creators">
+      {{ creator.firstName }} {{ creator.lastName }}
+    </li>
+  </ul>
+</ion-content>

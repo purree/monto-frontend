@@ -13,8 +13,50 @@ const routes: Routes = [
   },
   {
     path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
+    loadChildren: './attraction/list/list.module#ListPageModule'
+  },
+  {
+    path: 'profile',
+    loadChildren: './profile/profile.module#ProfilePageModule'
+  },
+  {
+    path: 'list/:id',
+    loadChildren: './attraction/attraction-detail/attraction-detail.module#AttractionDetailPageModule'
+  },
+  {
+    path: 'create-route',
+    loadChildren: './route/create-route/create-route.module#CreateRoutePageModule'
+  },
+  {
+    path: 'list-route',
+    loadChildren: './route/list-route/list-route.module#ListRoutePageModule'
+  },
+  { 
+    path: 'detail-route/:id', 
+    loadChildren: './route/detail-route/detail-route.module#DetailRoutePageModule'
+  },
+  { 
+    path: 'my-routes',
+    loadChildren: './route/my-routes/my-routes.module#MyRoutesPageModule'
+  },
+  /*
+  {
+    path: 'find-route',
+    loadChildren: './find-route/find-route.module#FindRoutePageModule'
+  },
+  {
+    path: 'my-route',
+    loadChildren: './my-route/my-route.module#MyRoutePageModule'
+  },
+  {
+    path: 'settings',
+    loadChildren: './settings/settings.module#SettingsPageModule'
+  },
+  {
+    path: 'sign-out',
+    loadChildren: './sign-out/sign-out.module#SignOutPageModule'
   }
+  */
 ];
 
 @NgModule({
@@ -23,4 +65,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
