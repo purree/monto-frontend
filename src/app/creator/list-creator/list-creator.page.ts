@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../api.service';
+
 
 @Component({
   selector: 'app-list-creator',
@@ -7,9 +9,41 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListCreatorPage implements OnInit {
 
-  constructor() { }
+  private creators: any;
+  private searchTerm: String = '';
+
+  constructor(private api: ApiService) { }
 
   ngOnInit() {
+    this.getDefualtCreators();
+  }
+
+  searchCreators() {
+    if (this.searchTerm == '') {
+      this.getDefualtCreators();
+      return;
+    }
+    this.api.findCreatorsByName(this.searchTerm).subscribe(data => {
+      let creatorsResponse = <any>data;
+      this.creators = creatorsResponse._embedded.creators;
+      this.setCreators();
+    });
+  }
+
+
+  getDefualtCreators() {
+    this.api.getCreators().subscribe(data => {
+      let creatorsResponse = <any>data;
+      this.creators = creatorsResponse._embedded.creators;
+      this.setCreators();
+    });
+  }
+
+  setCreators() {
+    this.creators.forEach(creator => {
+      let selfLink = creator._links.self.href;
+      creator.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
+    });
   }
 
 }

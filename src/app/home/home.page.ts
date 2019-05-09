@@ -174,4 +174,7 @@ export class HomePage {
   unselectAttraction(): void {
     this.selectedAttraction = null;
   }
+
+  // TODO: Modal for selecting a active route?
+
 }

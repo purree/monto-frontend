@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ApiService } from '../../api.service';
 
 @Component({
   selector: 'app-detail-creator',
@@ -7,9 +9,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetailCreatorPage implements OnInit {
 
-  constructor() { }
+  private creator: any;
+
+  constructor(private route: ActivatedRoute, private api: ApiService) { }
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter() {
+    let creatorId = this.route.snapshot.paramMap.get('id');
+    this.api.getCreator(creatorId).subscribe(data => {
+      this.creator = data;
+      this.api.getCreatorAttractions(this.creator).subscribe(data => {
+        let attractionRes = <any>data;
+        this.creator.attractions = attractionRes._embedded.attractions;
+        this.creator.attractions.forEach(attraction => {
+          let selfLink = attraction._links.self.href;
+          attraction.id = selfLink.substring(selfLink.lastIndexOf('/') + 1, selfLink.length);
+        });
+      });
+      //this.creator.id = creatorId;
+    });
   }
 
 }

@@ -20,7 +20,8 @@ export class CreateRoutePage implements OnInit {
     private storage: Storage) {
     this.routeForm = this.formBuilder.group({
       name: ['', Validators.required],
-      description: ['']
+      description: [''],
+      public: [false]
     })
   }
 
@@ -39,6 +40,7 @@ export class CreateRoutePage implements OnInit {
       let routeData = {
         "routeName": this.routeForm.value.name,
         "description": this.routeForm.value.description,
+        "public": this.routeForm.value.public,
         "routeCreator": userHref
       }
       this.api.createRoute(routeData).subscribe(data => {

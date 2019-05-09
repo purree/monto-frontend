@@ -29,6 +29,11 @@
       </div>
     </div>
 
+    <ion-item>
+      <ion-label>Public</ion-label>
+      <ion-toggle formControlName="public"></ion-toggle>
+    </ion-item>
+
     <ion-button class="bottom-btn" expand="block" fill="outline" type="submit" [disabled]="!routeForm.valid">
       <ion-icon slot="start" name="create"></ion-icon>
       Submit

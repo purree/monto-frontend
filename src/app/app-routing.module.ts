@@ -31,12 +31,18 @@ const routes: Routes = [
     path: 'list-route',
     loadChildren: './route/list-route/list-route.module#ListRoutePageModule'
   },
-  { 
-    path: 'detail-route/:id', 
+  {
+    path: 'detail-route/:id',
     loadChildren: './route/detail-route/detail-route.module#DetailRoutePageModule'
   },
-  { path: 'list-creator', loadChildren: './creator/list-creator/list-creator.module#ListCreatorPageModule' },
-  { path: 'detail-creator', loadChildren: './creator/detail-creator/detail-creator.module#DetailCreatorPageModule' },
+  { 
+    path: 'list-creator', 
+    loadChildren: './creator/list-creator/list-creator.module#ListCreatorPageModule'
+  },
+  { 
+    path: 'detail-creator/:id', 
+    loadChildren: './creator/detail-creator/detail-creator.module#DetailCreatorPageModule' 
+  },
   /*
   {
     path: 'find-route',

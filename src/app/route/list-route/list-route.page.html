@@ -25,7 +25,10 @@
   </ion-segment>
   <ion-list>
     <ion-item *ngFor="let route of routes" [routerLink]="'/detail-route/' + route.id">
-      <ion-label>{{route.routeName}}</ion-label>
+      <ion-label>
+        <h2>{{route.routeName}}</h2>
+        <h3>{{route.description}}</h3>
+      </ion-label>
       <div *ngIf="route.id === myActiveRouteId">
         <ion-icon color="primary" name="checkmark-circle-outline" size="small" slot="start"></ion-icon>
       </div>

@@ -13,7 +13,6 @@ export class ListRoutePage implements OnInit {
   private segment: any = "All";
 
   constructor(private api: ApiService) {
-    this.getDefualtRoutes();
   }
 
   ionViewWillEnter() {
@@ -24,6 +23,7 @@ export class ListRoutePage implements OnInit {
         this.myActiveRouteId = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
       }
     }));
+    this.getDefualtRoutes();
   }
 
   ngOnInit() {

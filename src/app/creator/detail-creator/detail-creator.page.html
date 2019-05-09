@@ -1,9 +1,18 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>detail-creator</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Creator</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+<ion-content padding>
+  <h2>{{ creator?.firstName }} {{ creator?.lastName }}</h2>
+  <ion-list>
+    <ion-list-header>Statues</ion-list-header>
+    <ion-item *ngFor="let attraction of creator?.attractions" [routerLink]="'/list/' + attraction.id">
+      <ion-label>{{ attraction.titleEnglish }}</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

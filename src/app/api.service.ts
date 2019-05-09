@@ -16,6 +16,10 @@ export class ApiService {
     this.setUser();
   }
 
+  async getUser() {
+     return await this.storage.get('userHref').then((userHref) => userHref);
+  }
+
   async setUser() {
     await this.storage.get('userHref').then((userHref) => {
       this.userHref = userHref
@@ -70,7 +74,7 @@ export class ApiService {
     return this.http.put(`${this.userHref}/activeRoute`, body);
   }
 
-  getMyActiveRouteAttractions(activeRoute:any) {
+  getMyActiveRouteAttractions(activeRoute: any) {
     return this.http.get(activeRoute._links.attractions.href);
   }
 
@@ -92,6 +96,15 @@ export class ApiService {
 
   getRouteRatings(route: any) {
     return this.http.get(route._links.ratings.href);
+  }
+
+  patchRoute(routeId, routeData) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.patch(`${apiUrl}/routes/${routeId}`, routeData, httpOptions);
   }
 
   createRoute(routeData) {
@@ -123,4 +136,19 @@ export class ApiService {
     return this.http.delete(`${apiUrl}/routes/${routeId}/attractions/${attractionId}`);
   }
 
+  getCreators() {
+    return this.http.get(`${apiUrl}/creators`);
+  }
+
+  getCreator(creatorId){
+    return this.http.get(`${apiUrl}/creators/${creatorId}`);
+  }
+
+  getCreatorAttractions(creator) {
+    return this.http.get(creator._links.attractions.href);
+  }
+
+  findCreatorsByName(searchTerm: String) {
+    return this.http.get(`${apiUrl}/creators/search/findByLastNameOrFirstNameIgnoreCaseContaining?lastName=${searchTerm}&firstName=${searchTerm}`);
+  }
 }

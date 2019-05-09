@@ -1,9 +1,21 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>list-creator</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Creators</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-searchbar [(ngModel)]="searchTerm" (search)="searchCreators()" (ionClear)="getDefualtCreators()">
+  </ion-searchbar>
+  <ion-list-header>Creators</ion-list-header>
+  <ion-list>
+    <ion-item *ngFor="let creator of creators" [routerLink]="'/detail-creator/' + creator.id">
+      <ion-label>
+        {{creator.firstName}} {{creator.lastName}}
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
