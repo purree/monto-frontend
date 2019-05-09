@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      {{ attraction?.title }}
+      {{ attraction?.titleEnglish }}
     </ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
@@ -15,15 +15,16 @@
       <div #map id="map"></div>
     </div>
   </ion-card>
-  <h2>{{ attraction?.title }}</h2>
-  <h4>{{ attraction?.titleEnglish }}</h4>
+  <ion-list-header>{{ attraction?.position?.latitude }}, {{ attraction?.position?.longitude }}</ion-list-header>
+  <h2>{{ attraction?.titleEnglish }}</h2>
+  <h4>{{ attraction?.title }}</h4>
   <p>{{ attraction?.description }}</p>
-  <p>{{ attraction?.position?.latitude }}, {{ attraction?.position?.longitude }}</p>
-  <ul>
-    <li *ngFor="let creator of attraction?.creators">
-      {{ creator.firstName }} {{ creator.lastName }}
-    </li>
-  </ul>
+  <ion-list>
+    <ion-list-header>Creator</ion-list-header>
+    <ion-chip *ngFor="let creator of attraction?.creators">
+      <ion-label>{{ creator.firstName }} {{ creator.lastName }}</ion-label>
+    </ion-chip>
+  </ion-list>
   <div *ngIf="!inActiveRoute; else not_in_active">
     <ion-button expand="block" (click)="addAttractionToRoute()">
       Add to route

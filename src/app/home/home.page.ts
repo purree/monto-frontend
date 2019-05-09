@@ -17,17 +17,20 @@ export class HomePage {
 
   @ViewChild('map') mapElement: ElementRef;
   map: any;
+  directionsService: any;
+  directionsDisplay: any;
   address: string;
-  attractionsResponse: any;
-  attraction: any;
+  attractions: any;
+  selectedAttraction: any;
   activeRoute: any;
+  markers: any = [];
 
   constructor(
     private http: HttpClient,
     private api: ApiService,
     private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder
-  ) {}
+  ) { }
 
   ionViewWillEnter() {
     this.api.getMyActiveRoute().then(val => val.subscribe(data => {
@@ -38,7 +41,11 @@ export class HomePage {
         this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
           let activeRouteAttractionsRes = <any>data;
           this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
-        })
+          this.activeRoute.attractions.forEach(attraction => {
+            let selfLink = attraction._links.self.href;
+            attraction.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
+          });
+        });
       }
     }));
   }
@@ -58,30 +65,61 @@ export class HomePage {
         disableDefaultUI: true
       }
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
       this.api.getAttractions().subscribe(data => {
-        this.attractionsResponse = data;
-        console.log(this.attractionsResponse._embedded.attractions);
-        this.attractionsResponse._embedded.attractions.forEach(attraction => {
+        let attractionsRes = <any>data;
+        this.attractions = attractionsRes._embedded.attractions;
+        this.attractions.forEach(attraction => {
           let selfLink = attraction._links.self.href;
           attraction.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
-          this.http.get(attraction._links.position.href).subscribe(data => {
+          this.api.getAttractionPosition(attraction).subscribe(data => {
             let pos = <any>data;
-            let marker = new google.maps.Marker({
-              position: new google.maps.LatLng(pos.latitude, pos.longitude),
-              animation: google.maps.Animation.Bounce,
-              map: this.map
-            });
+            attraction.position = new google.maps.LatLng(pos.latitude, pos.longitude);
+            let marker = this.createMarker(attraction.position);
+            this.markers.push(marker);
             marker.addListener('click', () => {
               this.map.panTo(marker.getPosition());
               this.onSelect(attraction);
-              console.log(attraction);
             });
           })
         });
       });
     }).catch((error) => {
       console.log('Error getting location', error);
+    });
+  }
+
+  createMarker(position) {
+    return new google.maps.Marker({
+      position: position,
+      animation: google.maps.Animation.Bounce,
+      map: this.map
+    });
+  }
+
+  startRoute() {
+    this.markers.forEach(marker => marker.setMap(null));
+    this.markers = [];
+    let wayPoints = [];
+    this.activeRoute.attractions.forEach(attraction => {
+      attraction.position = this.attractions.find(x => x.id == attraction.id).position;
+      let marker = this.createMarker(attraction.position);
+      this.markers.push(marker);
+      wayPoints.push({ location: attraction.position });
+    });
+    this.directionsService = new google.maps.DirectionsService;
+    this.directionsDisplay = new google.maps.DirectionsRenderer;
+    this.directionsDisplay.setMap(this.map);
+    this.directionsService.route({
+      origin: new google.maps.LatLng(59.3268215, 18.0695307),
+      destination: new google.maps.LatLng(59.3268215, 18.0695307),
+      waypoints: wayPoints,
+      optimizeWaypoints: true,
+      travelMode: 'WALKING'
+    }, (response, status) => {
+      console.log(response);
+      console.log(status);
+      this.directionsDisplay.setDirections(response);
+      let route = response.routes[0];
     });
   }
 
@@ -113,9 +151,9 @@ export class HomePage {
   }
 
   addAttractionToRoute() {
-    this.api.addAttractionToRoute(this.activeRoute._links.attractions.href, this.attraction._links.self.href).subscribe(data => {
-      this.activeRoute.attractions.push(this.attraction);
-      this.attraction.inRoute = true;
+    this.api.addAttractionToRoute(this.activeRoute._links.attractions.href, this.selectedAttraction._links.self.href).subscribe(data => {
+      this.activeRoute.attractions.push(this.selectedAttraction);
+      this.selectedAttraction.inRoute = true;
     });
   }
 
@@ -123,17 +161,17 @@ export class HomePage {
     this.api.removeAttractionFromRoute(this.activeRoute.id, attractionId).subscribe(data => {
       if (!data) {
         this.activeRoute.attractions = this.activeRoute.attractions.filter(x => x.id !== attractionId);
-        this.attraction.inRoute = false;
+        this.selectedAttraction.inRoute = false;
       }
     });
   }
 
   onSelect(item: any): void {
-    this.attraction = item;
-    this.attraction.inRoute = !!this.activeRoute.attractions.find(x => x._links.self.href == this.attraction._links.self.href);
+    this.selectedAttraction = item;
+    this.selectedAttraction.inRoute = !!this.activeRoute.attractions.find(x => x._links.self.href == this.selectedAttraction._links.self.href);
   }
 
   unselectAttraction(): void {
-    this.attraction = null;
+    this.selectedAttraction = null;
   }
 }

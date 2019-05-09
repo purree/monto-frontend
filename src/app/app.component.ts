@@ -28,14 +28,14 @@ export class AppComponent {
       icon: 'contact'
     },
     {
-      title: 'Create Route',
-      url: '/create-route',
-      icon: 'create'
-    },
-    {
-      title: 'Find Route',
+      title: 'Routes',
       url: '/list-route',
       icon: 'search'
+    },
+    {
+      title: 'Creators',
+      url: '/list-creator',
+      icon: 'person'
     },
     {
       title: 'Settings',

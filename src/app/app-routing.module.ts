@@ -35,6 +35,8 @@ const routes: Routes = [
     path: 'detail-route/:id', 
     loadChildren: './route/detail-route/detail-route.module#DetailRoutePageModule'
   },
+  { path: 'list-creator', loadChildren: './creator/list-creator/list-creator.module#ListCreatorPageModule' },
+  { path: 'detail-creator', loadChildren: './creator/detail-creator/detail-creator.module#DetailCreatorPageModule' },
   /*
   {
     path: 'find-route',

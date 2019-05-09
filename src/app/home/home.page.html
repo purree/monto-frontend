@@ -19,11 +19,11 @@
 <ion-content>
   <div class="map-wrapper">
     <div #map id="map"></div>
-    <div *ngIf="route">
+    <div *ngIf="activeRoute && activeRoute?.attractions?.length > 0">
       <ion-grid class="full-width-grid">
         <ion-row>
           <ion-col>
-            <ion-button class="map-float-btn ion-margin-horizontal" expand="block">Start Route</ion-button>
+            <ion-button (click)="startRoute()" class="map-float-btn ion-margin-horizontal" expand="block">Start Route</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -31,23 +31,26 @@
   </div>
 </ion-content>
 
-<div *ngIf="attraction">
+<div *ngIf="selectedAttraction">
   <ion-card id="card" class="map-card">
     <!--<img [src]="attraction.picture"/>-->
     <ion-card-header class="bg-white">
       <ion-icon class="card-close-icon ion-text-right" (click)="unselectAttraction()" name="close"></ion-icon>
-      <ion-card-title>{{ attraction.title }}</ion-card-title>
-      <ion-card-subtitle>{{ attraction.titleEnglish }}</ion-card-subtitle>
-      <ion-button [routerLink]="'/list/' + attraction.id">
+      <ion-card-title class="map-card-title">{{ selectedAttraction.titleEnglish }}</ion-card-title>
+      <ion-card-subtitle>{{ selectedAttraction.title }}</ion-card-subtitle>
+      <ion-button size="small" [routerLink]="'/list/' + selectedAttraction.id">
         <ion-icon name="information-circle-outline"></ion-icon>
+        Info
       </ion-button>
-      <ion-button *ngIf="!attraction.inRoute; else not_in_active" [disabled]="!activeRoute"
+      <ion-button size="small" color="success" *ngIf="!selectedAttraction.inRoute; else not_in_active" [disabled]="!activeRoute"
         (click)="addAttractionToRoute()">
         <ion-icon name="add"></ion-icon>
+        Add
       </ion-button>
       <ng-template #not_in_active>
-        <ion-button color="danger" (click)="removeAttractionFromRoute(attraction?.id)">
+        <ion-button size="small" color="danger" (click)="removeAttractionFromRoute(selectedAttraction?.id)">
           <ion-icon name="remove"></ion-icon>
+          Remove
         </ion-button>
       </ng-template>
     </ion-card-header>

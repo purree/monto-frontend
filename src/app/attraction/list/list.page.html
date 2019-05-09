@@ -13,10 +13,10 @@
   </ion-searchbar>
   <ion-list>
     <ion-item *ngFor="let attraction of attractions" [routerLink]="'/list/' + attraction.id">
-      {{attraction.title}}
-      <div class="item-note" slot="end">
-        {{attraction.titleEnglish}}
-      </div>
+      <ion-label>
+        <h2>{{attraction.titleEnglish}}</h2>
+        <h3>{{attraction.title}}</h3>
+      </ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

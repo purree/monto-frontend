@@ -13,14 +13,20 @@ export class DetailRoutePage implements OnInit {
 
   private route: any;
   private routeId: any;
-  private userHref: any;
+  private myActiveRouteId: any;
+  private isActive: boolean;
 
-  constructor(private activatedRoute: ActivatedRoute, private api: ApiService, private storage:Storage) { }
+  constructor(private activatedRoute: ActivatedRoute, private api: ApiService, private storage: Storage) { }
 
   ngOnInit() {
-    this.storage.get('userHref').then((userHref) => {
-      this.userHref = userHref;
-    });
+    this.api.getMyActiveRoute().then(val => val.subscribe(data => {
+      if (data) {
+        let activeRouteResonse = <any>data;
+        let selfLink = activeRouteResonse._links.self.href;
+        this.myActiveRouteId = selfLink.substring(selfLink.lastIndexOf('/') + 1, selfLink.length);
+        this.isActive = this.myActiveRouteId == this.routeId;
+      }
+    }));
   }
 
   ionViewWillEnter() {
@@ -46,7 +52,7 @@ export class DetailRoutePage implements OnInit {
 
   setActiveRoute() {
     this.api.setMyActiveRoute(this.route._links.self.href).subscribe(data => {
-      console.log(data);
+      this.isActive = true;
     });
   }
 
