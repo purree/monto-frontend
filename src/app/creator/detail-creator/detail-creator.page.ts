@@ -23,12 +23,7 @@ export class DetailCreatorPage implements OnInit {
       this.api.getCreatorAttractions(this.creator).subscribe(data => {
         let attractionRes = <any>data;
         this.creator.attractions = attractionRes._embedded.attractions;
-        this.creator.attractions.forEach(attraction => {
-          let selfLink = attraction._links.self.href;
-          attraction.id = selfLink.substring(selfLink.lastIndexOf('/') + 1, selfLink.length);
-        });
       });
-      //this.creator.id = creatorId;
     });
   }
 

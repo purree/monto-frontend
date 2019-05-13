@@ -6,20 +6,13 @@
     <ion-title>
       Map
     </ion-title>
-    <!--
-      <ion-buttons slot="end">
-        <ion-button (click)="loadMap()" shape="round" fill="outline">
-          <ion-icon slot="start" name="locate"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    -->
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="map-wrapper">
     <div #map id="map"></div>
-    <div *ngIf="activeRoute && activeRoute?.attractions?.length > 0">
+    <div *ngIf="activeRoute && activeRoute?.attractions?.length > 0 && !routeStarted">
       <ion-grid class="full-width-grid">
         <ion-row>
           <ion-col>

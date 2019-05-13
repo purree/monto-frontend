@@ -15,13 +15,13 @@
       <div #map id="map"></div>
     </div>
   </ion-card>
-  <ion-list-header>{{ attraction?.position?.latitude }}, {{ attraction?.position?.longitude }}</ion-list-header>
+  <ion-list-header>{{ attraction?.position.district.name }}: {{ attraction?.position.latitude }}, {{ attraction?.position?.longitude }}</ion-list-header>
   <h2>{{ attraction?.titleEnglish }}</h2>
   <h4>{{ attraction?.title }}</h4>
   <p>{{ attraction?.description }}</p>
   <ion-list>
     <ion-list-header>Creator</ion-list-header>
-    <ion-chip *ngFor="let creator of attraction?.creators">
+    <ion-chip *ngFor="let creator of attraction?.creators" [routerLink]="'/detail-creator/' + creator.id" >
       <ion-label>{{ creator.firstName }} {{ creator.lastName }}</ion-label>
     </ion-chip>
   </ion-list>

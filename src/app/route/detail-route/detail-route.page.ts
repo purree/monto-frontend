@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../api.service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-detail-route',
@@ -15,13 +17,19 @@ export class DetailRoutePage implements OnInit {
   private myActiveRouteId: any;
   private isRouteCreator: any;
   private isActive: boolean;
+  private text: string;
+  private url: string;
+
   routeForm: FormGroup;
 
 
   constructor(
+    private socialSharing: SocialSharing,
+    private file: File,
     private activatedRoute: ActivatedRoute,
     private api: ApiService,
     private formBuilder: FormBuilder) {
+    this.url = window.location.pathname;
   }
 
   ngOnInit() {
@@ -38,8 +46,10 @@ export class DetailRoutePage implements OnInit {
 
   ionViewWillEnter() {
     this.routeId = this.activatedRoute.snapshot.paramMap.get('id');
+    console.log(this.activatedRoute.snapshot);
     this.api.getRoute(this.routeId).subscribe(data => {
       this.route = data;
+      this.route.attractions = this.route._embedded.attractions;
       this.routeForm = this.formBuilder.group({
         name: [this.route.routeName, Validators.required],
         description: [this.route.description],
@@ -49,33 +59,27 @@ export class DetailRoutePage implements OnInit {
         this.route.creator = data;
         this.api.getUser().then((userHref) => this.isRouteCreator = userHref == this.route.creator._links.self.href);
       });
-      this.api.getRouteAttractions(this.route).subscribe(data => {
-        let attractionsResponse = <any>data;
-        this.route.attractions = attractionsResponse._embedded.attractions;
-        this.route.attractions.forEach(attraction => {
-          let selfLink = attraction._links.self.href;
-          attraction.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
-        });
-      });
       this.api.getRouteRatings(this.route).subscribe(data => {
         let ratingsResponse = <any>data;
         this.route.ratings = ratingsResponse._embedded.ratings;
       });
     });
-    this.api.getMyActiveRoute().then(val => val.subscribe(data => {
-      if (data) {
-        let activeRouteResonse = <any>data;
-        let selfLink = activeRouteResonse._links.self.href;
-        this.myActiveRouteId = selfLink.substring(selfLink.lastIndexOf('/') + 1, selfLink.length);
-        this.isActive = this.myActiveRouteId == this.routeId;
-      }
-    }));
+    this.api.getUser().then(userHref => {
+      this.api.getMyActiveRoute(userHref).subscribe(data => {
+        if (data) {
+          let activeRouteResonse = <any>data;
+          this.myActiveRouteId = activeRouteResonse.id;
+          this.isActive = this.myActiveRouteId == this.routeId;
+        }
+      });
+    })
   }
 
-
   setActiveRoute() {
-    this.api.setMyActiveRoute(this.route._links.self.href).subscribe(data => {
-      this.isActive = true;
+    this.api.getUser().then(userHref => {
+      this.api.setMyActiveRoute(userHref, this.route._links.self.href).subscribe(data => {
+        this.isActive = true;
+      });
     });
   }
 
@@ -87,4 +91,53 @@ export class DetailRoutePage implements OnInit {
     });
   }
 
+
+  async shareTwitter() {
+    // Either URL or Image
+    this.socialSharing.shareViaTwitter(null, null, this.url).then(() => {
+      // Success
+    }).catch((e) => {
+      // Error!
+    });
+  }
+
+  async shareWhatsApp() {
+    // Text + Image or URL works
+    this.socialSharing.shareViaWhatsApp(this.text, null, this.url).then(() => {
+      // Success
+    }).catch((e) => {
+      // Error!
+    });
+  }
+
+  async resolveLocalFile() {
+    return this.file.copyFile(`${this.file.applicationDirectory}www/assets/imgs/`, 'academy.jpg', this.file.cacheDirectory, `${new Date().getTime()}.jpg`);
+  }
+
+  removeTempFile(name) {
+    this.file.removeFile(this.file.cacheDirectory, name);
+  }
+
+  async shareEmail() {
+    //let file = await this.resolveLocalFile();
+    console.log('im here!');
+    this.socialSharing.shareViaEmail(this.text, 'My custom subject', ['saimon@devdactic.com'], null, null, null/*file.nativeURL*/).then((any) => {
+      //this.removeTempFile(file.name);
+      console.log('Now im here: ' + any);
+    }).catch((e) => {
+      console.log(e);
+      // Error!
+    });
+  }
+
+  async shareFacebook() {
+    let file = await this.resolveLocalFile();
+
+    // Image or URL works
+    this.socialSharing.shareViaFacebook(null, file.nativeURL, null).then(() => {
+      this.removeTempFile(file.name);
+    }).catch((e) => {
+      // Error!
+    });
+  }
 }

@@ -16,14 +16,15 @@ export class ListRoutePage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.api.getMyActiveRoute().then(val => val.subscribe(data => {
-      if(data){
-        let activeRouteResonse = <any> data;
-        let selfLink = activeRouteResonse._links.self.href;
-        this.myActiveRouteId = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
-      }
-    }));
-    this.getDefualtRoutes();
+    this.api.getUser().then(userHref => {
+      this.api.getMyActiveRoute(userHref).subscribe(data => {
+        if (data) {
+          let activeRouteResonse = <any>data;
+          this.myActiveRouteId = activeRouteResonse.id;
+        }
+        this.getDefualtRoutes();
+      });
+    });
   }
 
   ngOnInit() {
@@ -33,20 +34,14 @@ export class ListRoutePage implements OnInit {
     this.api.getRoutes().subscribe(data => {
       let routesResponse = <any>data;
       this.routes = routesResponse._embedded.routes;
-      this.routes.forEach(route => {
-        let selfLink = route._links.self.href;
-        route.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
-      });
     });
   }
 
   getMyRoutes() {
-    this.api.getMyRoutes().subscribe(data => {
-      let routesResponse = <any>data;
-      this.routes = routesResponse._embedded.routes;
-      this.routes.forEach(route => {
-        let selfLink = route._links.self.href;
-        route.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
+    this.api.getUser().then(userHref => {
+      this.api.getMyRoutes(userHref).subscribe(data => {
+        let routesResponse = <any>data;
+        this.routes = routesResponse._embedded.routes;
       });
     });
   }

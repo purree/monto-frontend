@@ -25,7 +25,6 @@ export class ListPage implements OnInit {
     this.api.findAttractionsByTitle(this.searchTerm).subscribe(data => {
       let attractionsResponse = <any>data;
       this.attractions = attractionsResponse._embedded.attractions;
-      this.setAttractions();
     });
   }
 
@@ -33,14 +32,6 @@ export class ListPage implements OnInit {
     this.api.getAttractions().subscribe(data => {
       let attractionsResponse = <any>data;
       this.attractions = attractionsResponse._embedded.attractions;
-      this.setAttractions();
-    });
-  }
-
-  setAttractions() {
-    this.attractions.forEach(attraction => {
-      let selfLink = attraction._links.self.href;
-      attraction.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
     });
   }
 }

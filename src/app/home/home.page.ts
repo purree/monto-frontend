@@ -5,7 +5,6 @@ import { ApiService } from '../api.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 
-
 declare var google;
 
 @Component({
@@ -23,7 +22,9 @@ export class HomePage {
   attractions: any;
   selectedAttraction: any;
   activeRoute: any;
+  userMarker: any;
   markers: any = [];
+  routeStarted: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -33,85 +34,132 @@ export class HomePage {
   ) { }
 
   ionViewWillEnter() {
-    this.api.getMyActiveRoute().then(val => val.subscribe(data => {
-      if (data) {
-        this.activeRoute = data;
-        let selfLink = this.activeRoute._links.self.href;
-        this.activeRoute.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
-        this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
-          let activeRouteAttractionsRes = <any>data;
-          this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
-          this.activeRoute.attractions.forEach(attraction => {
-            let selfLink = attraction._links.self.href;
-            attraction.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
-          });
-        });
-      }
-    }));
+    this.api.getUser().then(userHref => {
+      this.api.getMyActiveRoute(userHref).subscribe(data => {
+        if (data) {
+          this.activeRoute = data;
+          this.activeRoute.attractions = this.activeRoute._embedded.attractions;
+          /*this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
+            let activeRouteAttractionsRes = <any>data;
+            this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
+          });*/
+        }
+        this.loadMap();
+      });
+    });
   }
 
-  ngOnInit() {
-    this.loadMap();
-  }
+  ngOnInit() { }
 
   loadMap() {
-    this.geolocation.getCurrentPosition().then((resp) => {
-      //let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      let latLng = new google.maps.LatLng(59.3251467, 18.0679113);
-      let mapOptions = {
-        center: latLng,
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        disableDefaultUI: true
-      }
-      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-      this.api.getAttractions().subscribe(data => {
-        let attractionsRes = <any>data;
-        this.attractions = attractionsRes._embedded.attractions;
-        this.attractions.forEach(attraction => {
-          let selfLink = attraction._links.self.href;
-          attraction.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
-          this.api.getAttractionPosition(attraction).subscribe(data => {
-            let pos = <any>data;
-            attraction.position = new google.maps.LatLng(pos.latitude, pos.longitude);
-            let marker = this.createMarker(attraction.position);
-            this.markers.push(marker);
-            marker.addListener('click', () => {
-              this.map.panTo(marker.getPosition());
-              this.onSelect(attraction);
-            });
-          })
+    //let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+    let latLng = new google.maps.LatLng(59.3251467, 18.0679113);
+    let mapOptions = {
+      center: latLng,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true
+    }
+    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+    this.map.mapTypes.set('styled_map', this.styledMapType);
+    this.map.setMapTypeId('styled_map');
+    this.api.getAttractions().subscribe(data => {
+      let attractionsRes = <any>data;
+      this.attractions = attractionsRes._embedded.attractions;
+      this.attractions.forEach(attraction => {
+        //this.api.getAttractionPosition(attraction).subscribe(data => {
+        //let pos = <any>data;
+        attraction.position = new google.maps.LatLng(attraction.position.latitude, attraction.position.longitude);
+        let inRoute = !!this.activeRoute.attractions.find(x => x.id == attraction.id);
+        let color = inRoute ? 'green' : 'red';
+        let marker = this.createMarker(attraction.position, color);
+        this.markers.push({ id: attraction.id, marker });
+        marker.addListener('click', () => {
+          this.map.panTo(marker.getPosition());
+          this.onSelect(attraction);
         });
+        //})
       });
+    });
+    this.geolocation.getCurrentPosition().then((resp) => {
+      let currentPosition = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+      this.createUserMarker(currentPosition);
     }).catch((error) => {
       console.log('Error getting location', error);
     });
   }
 
-  createMarker(position) {
-    return new google.maps.Marker({
-      position: position,
+  createUserMarker(userPosition) {
+    let icon = {
+      path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0',
+      fillColor: '#4A90E2',
+      fillOpacity: 1,
+      anchor: new google.maps.Point(0, 0),
+      strokeWeight: 15,
+      strokeOpacity: 0.5,
+      strokeColor: '#4A90E2',
+      scale: 0.5
+    }
+    this.userMarker = new google.maps.Marker({
+      position: userPosition,
       animation: google.maps.Animation.Bounce,
-      map: this.map
+      map: this.map,
+      icon,
+    });
+    let watch = this.geolocation.watchPosition();
+    watch.subscribe((data) => {
+      console.log('Updated user position');
+      let updatedPosition = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
+      this.userMarker.setPosition(updatedPosition);
+      if (this.activeRoute.attractions) {
+        this.activeRoute.attractions.forEach(attraction => {
+          console.log(`The distance between the user and ${attraction.title} is ${this.getDistance(updatedPosition, attraction.position)} meters.`);
+        });
+      }
     });
   }
 
+  createMarker(position, color) {
+    return new google.maps.Marker({
+      position: position,
+      animation: google.maps.Animation.Bounce,
+      map: this.map,
+      icon: {
+        url: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
+      }
+    });
+  }
+
+  getFarthestAttraction() {
+    let farthestAttraction;
+    let farthestAttractionDistance = 0;
+    this.activeRoute.attractions.forEach(attraction => {
+      let distance = this.getDistance(this.userMarker.position, attraction.position);
+      if (distance > farthestAttractionDistance) {
+        farthestAttraction = attraction;
+        farthestAttractionDistance = distance;
+      }
+    });
+    return farthestAttraction;
+  }
+
   startRoute() {
-    this.markers.forEach(marker => marker.setMap(null));
+    this.createUserMarker(this.userMarker.position);
+    this.markers.forEach(marker => marker.marker.setMap(null));
     this.markers = [];
     let wayPoints = [];
     this.activeRoute.attractions.forEach(attraction => {
       attraction.position = this.attractions.find(x => x.id == attraction.id).position;
-      let marker = this.createMarker(attraction.position);
-      this.markers.push(marker);
+      let marker = this.createMarker(attraction.position, 'green');
+      this.markers.push({ id: attraction.id, marker });
       wayPoints.push({ location: attraction.position });
     });
     this.directionsService = new google.maps.DirectionsService;
-    this.directionsDisplay = new google.maps.DirectionsRenderer;
+    this.directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
     this.directionsDisplay.setMap(this.map);
     this.directionsService.route({
-      origin: new google.maps.LatLng(59.3268215, 18.0695307),
-      destination: new google.maps.LatLng(59.3268215, 18.0695307),
+      origin: this.userMarker.position,
+      destination: this.getFarthestAttraction().position,
       waypoints: wayPoints,
       optimizeWaypoints: true,
       travelMode: 'WALKING'
@@ -119,9 +167,103 @@ export class HomePage {
       console.log(response);
       console.log(status);
       this.directionsDisplay.setDirections(response);
-      let route = response.routes[0];
+    });
+    this.routeStarted = true;
+  }
+
+  addAttractionToRoute() {
+    console.log('activeRoutesHref: ' + this.activeRoute._links.attractions.href);
+    this.api.addAttractionToRoute(this.activeRoute.id, this.selectedAttraction.id).subscribe(data => {
+      this.activeRoute.attractions.push(this.selectedAttraction);
+      this.selectedAttraction.inRoute = true;
+      this.markers.find(marker => marker.id == this.selectedAttraction.id).marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
     });
   }
+
+  removeAttractionFromRoute(attractionId) {
+    this.api.removeAttractionFromRoute(this.activeRoute.id, attractionId).subscribe(data => {
+      if (!data) {
+        this.activeRoute.attractions = this.activeRoute.attractions.filter(x => x.id !== attractionId);
+        this.selectedAttraction.inRoute = false;
+        this.markers.find(marker => marker.id == this.selectedAttraction.id).marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+      }
+    });
+  }
+
+  onSelect(item: any): void {
+    this.selectedAttraction = item;
+    this.selectedAttraction.inRoute = !!this.activeRoute._embedded.attractions.find(x => x.id == this.selectedAttraction.id);
+  }
+
+  unselectAttraction(): void {
+    this.selectedAttraction = null;
+  }
+
+  // TODO: Modal for selecting a active route?
+
+  rad(x) {
+    return x * Math.PI / 180;
+  };
+
+  getDistance(p1, p2) {
+    const earthRadius = 6378137; // Earth’s mean radius in meter
+    const diffLat = this.rad(p2.lat() - p1.lat());
+    const diffLong = this.rad(p2.lng() - p1.lng());
+    const a = Math.sin(diffLat / 2) * Math.sin(diffLat / 2) +
+      Math.cos(this.rad(p1.lat())) * Math.cos(this.rad(p2.lat())) *
+      Math.sin(diffLong / 2) * Math.sin(diffLong / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadius * c;
+    return distance; // returns the distance in meter
+  };
+
+  private styledMapType = new google.maps.StyledMapType(
+    [
+      {
+        "featureType": "administrative.land_parcel",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
+        "featureType": "administrative.neighborhood",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
+        "featureType": "poi",
+        "elementType": "labels.text",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
+        "featureType": "road",
+        "elementType": "labels",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
+        "featureType": "water",
+        "elementType": "labels.text",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      }
+    ],
+    { name: 'Styled Map' });
 
   getAddressFromCoords(lattitude, longitude) {
     console.log("getAddressFromCoords " + lattitude + " " + longitude);
@@ -129,7 +271,6 @@ export class HomePage {
       useLocale: true,
       maxResults: 5
     };
-
     this.nativeGeocoder.reverseGeocode(lattitude, longitude, options)
       .then((result: NativeGeocoderReverseResult[]) => {
         this.address = "";
@@ -149,32 +290,5 @@ export class HomePage {
         this.address = "Address Not Available!";
       });
   }
-
-  addAttractionToRoute() {
-    this.api.addAttractionToRoute(this.activeRoute._links.attractions.href, this.selectedAttraction._links.self.href).subscribe(data => {
-      this.activeRoute.attractions.push(this.selectedAttraction);
-      this.selectedAttraction.inRoute = true;
-    });
-  }
-
-  removeAttractionFromRoute(attractionId) {
-    this.api.removeAttractionFromRoute(this.activeRoute.id, attractionId).subscribe(data => {
-      if (!data) {
-        this.activeRoute.attractions = this.activeRoute.attractions.filter(x => x.id !== attractionId);
-        this.selectedAttraction.inRoute = false;
-      }
-    });
-  }
-
-  onSelect(item: any): void {
-    this.selectedAttraction = item;
-    this.selectedAttraction.inRoute = !!this.activeRoute.attractions.find(x => x._links.self.href == this.selectedAttraction._links.self.href);
-  }
-
-  unselectAttraction(): void {
-    this.selectedAttraction = null;
-  }
-
-  // TODO: Modal for selecting a active route?
 
 }

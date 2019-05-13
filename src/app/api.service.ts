@@ -13,33 +13,18 @@ export class ApiService {
   private userHref: any;
 
   constructor(private http: HttpClient, private storage: Storage) {
-    this.setUser();
   }
 
   async getUser() {
      return await this.storage.get('userHref').then((userHref) => userHref);
   }
 
-  async setUser() {
-    await this.storage.get('userHref').then((userHref) => {
-      this.userHref = userHref
-    });
-  }
-
   getAttraction(id: any) {
-    return this.http.get(`${apiUrl}/attractions/${id}`);
-  }
-
-  getAttractionCreators(attraction: any) {
-    return this.http.get(attraction._links.creators.href);
+    return this.http.get(`${apiUrl}/attraction-with-meta/${id}`);
   }
 
   getAttractionPosition(attraction: any) {
     return this.http.get(attraction._links.position.href);
-  }
-
-  getAttractionCategory(attraction: any) {
-    return this.http.get(attraction._links.category.href);
   }
 
   getAttractions() {
@@ -50,17 +35,15 @@ export class ApiService {
     return this.http.get(`${apiUrl}/attractions/search/findByTitleIgnoreCaseContaining?title=${searchTerm}`);
   }
 
-  getMyRoutes() {
-    return this.http.get(`${this.userHref}/routes`);
+  getMyRoutes(userHref) {
+    return this.http.get(`${userHref}/routes`);
   }
 
-  getMyActiveRoute() {
-    return this.storage.get('userHref').then(userHref => {
-      return this.http.get(`${this.userHref}/activeRoute`);
-    })
+  getMyActiveRoute(userHref) {
+      return this.http.get(`${userHref}/activeRoute`);
   }
 
-  setMyActiveRoute(activeRoute) {
+  setMyActiveRoute(userHref, activeRoute) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -71,7 +54,7 @@ export class ApiService {
         "activeRoute": activeRoute
       }
     }
-    return this.http.put(`${this.userHref}/activeRoute`, body);
+    return this.http.put(`${userHref}/activeRoute`, body);
   }
 
   getMyActiveRouteAttractions(activeRoute: any) {
@@ -87,15 +70,15 @@ export class ApiService {
   }
 
   getRouteCreator(route: any) {
-    return this.http.get(route._links.routeCreator.href);
+    return this.http.get(`${apiUrl}/routes/${route.id}/routeCreator`);
   }
 
   getRouteAttractions(route: any) {
-    return this.http.get(route._links.attractions.href);
+    return this.http.get(`${apiUrl}/routes/${route.id}/attractions`);
   }
 
   getRouteRatings(route: any) {
-    return this.http.get(route._links.ratings.href);
+    return this.http.get(`${apiUrl}/routes/${route.id}/ratings`);
   }
 
   patchRoute(routeId, routeData) {
@@ -116,7 +99,8 @@ export class ApiService {
     return this.http.post(`${apiUrl}/routes`, routeData, httpOptions);
   }
 
-  addAttractionToRoute(activeRoutesHref, attractionHref) {
+  addAttractionToRoute(activeRouteId, attractionId) {
+    let attractionHref = `${apiUrl}/attractions/${attractionId}`;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -129,7 +113,7 @@ export class ApiService {
         ]
       }
     }
-    return this.http.patch(activeRoutesHref, body, httpOptions);
+    return this.http.patch(`${apiUrl}/routes/${activeRouteId}/attractions`, body, httpOptions);
   }
 
   removeAttractionFromRoute(routeId, attractionId) {
@@ -145,7 +129,7 @@ export class ApiService {
   }
 
   getCreatorAttractions(creator) {
-    return this.http.get(creator._links.attractions.href);
+    return this.http.get(`${apiUrl}/creators/${creator.id}/attractions`);
   }
 
   findCreatorsByName(searchTerm: String) {

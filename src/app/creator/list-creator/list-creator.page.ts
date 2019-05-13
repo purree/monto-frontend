@@ -26,7 +26,6 @@ export class ListCreatorPage implements OnInit {
     this.api.findCreatorsByName(this.searchTerm).subscribe(data => {
       let creatorsResponse = <any>data;
       this.creators = creatorsResponse._embedded.creators;
-      this.setCreators();
     });
   }
 
@@ -35,15 +34,6 @@ export class ListCreatorPage implements OnInit {
     this.api.getCreators().subscribe(data => {
       let creatorsResponse = <any>data;
       this.creators = creatorsResponse._embedded.creators;
-      this.setCreators();
     });
   }
-
-  setCreators() {
-    this.creators.forEach(creator => {
-      let selfLink = creator._links.self.href;
-      creator.id = selfLink.substring(selfLink.lastIndexOf('/'), selfLink.length);
-    });
-  }
-
 }

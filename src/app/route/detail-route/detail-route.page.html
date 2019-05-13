@@ -77,4 +77,25 @@
   <ion-button [disabled]="isActive" expand="block" (click)="setActiveRoute()">
     Set active route
   </ion-button>
+
+  <ion-fab color="light" vertical="top" horizontal="end">
+    <ion-fab-button>
+      <ion-icon name="share"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-list side="bottom">
+      <ion-fab-button (click)="shareTwitter()">
+        <ion-icon name="logo-twitter"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="shareEmail()">
+        <ion-icon name="mail"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="shareFacebook()">
+        <ion-icon name="logo-facebook"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="shareWhatsApp()">
+        <ion-icon name="logo-whatsapp"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>
