@@ -31,15 +31,15 @@ export class AttractionDetailPage implements OnInit {
       this.api.getUser().then(userHref => {
         this.api.getMyActiveRoute(userHref).subscribe(data => {
           this.activeRoute = data;
-          this.inActiveRoute = !!this.activeRoute._embedded.attractions.find(x => x.id == this.attraction.id);
+         // this.inActiveRoute = !!this.activeRoute._embedded.attractions.find(x => x.id == this.attraction.id);
           /*console.log(this.activeRoute);
-          console.log(this.activeRoute._embedded.attractions);
+          console.log(this.activeRoute._embedded.attractions);*/
           this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
             let activeRouteAttractionsRes = <any>data;
             console.log(activeRouteAttractionsRes);
             this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
-            this.inActiveRoute = !!this.activeRoute.attractions.find(x => x._links.self.href == this.attraction._links.self.href);
-          });*/
+            this.inActiveRoute = !!this.activeRoute.attractions.find(x => x.id == this.attraction.id);
+          });
         });
       });
     });
@@ -47,7 +47,8 @@ export class AttractionDetailPage implements OnInit {
 
   addAttractionToRoute() {
     this.api.addAttractionToRoute(this.activeRoute.id, this.attraction.id).subscribe(data => {
-      this.activeRoute._embedded.attractions.push(this.attraction);
+      this.activeRoute.attractions.push(this.attraction);
+      //this.activeRoute._embedded.attractions.push(this.attraction);
       this.inActiveRoute = true;
     });
   }
@@ -55,7 +56,8 @@ export class AttractionDetailPage implements OnInit {
   removeAttractionFromRoute(attractionId) {
     this.api.removeAttractionFromRoute(this.activeRoute.id, attractionId).subscribe(data => {
       if (!data) {
-        this.activeRoute._embedded.attractions = this.activeRoute._embedded.attractions.filter(x => x.id !== attractionId);
+        this.activeRoute.attractions = this.activeRoute.attractions.filter(x => x.id !== attractionId);
+        //this.activeRoute._embedded.attractions = this.activeRoute._embedded.attractions.filter(x => x.id !== attractionId);
         this.inActiveRoute = false;
       }
     });

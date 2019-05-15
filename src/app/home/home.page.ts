@@ -36,16 +36,21 @@ export class HomePage {
   ionViewWillEnter() {
     this.api.getUser().then(userHref => {
       this.api.getMyActiveRoute(userHref).subscribe(data => {
+        console.log(data);
         if (data) {
           this.activeRoute = data;
-          this.activeRoute.attractions = this.activeRoute._embedded.attractions;
-          /*this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
+          //this.activeRoute.attractions = this.activeRoute._embedded.attractions;
+          this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
             let activeRouteAttractionsRes = <any>data;
             this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
-          });*/
+          });
         }
-        this.loadMap();
-      });
+
+      }, error => {
+        // A 404 on from the api means no user with that email exists
+        console.log(error);
+      },
+        () => this.loadMap());
     });
   }
 
@@ -64,14 +69,21 @@ export class HomePage {
     this.map.mapTypes.set('styled_map', this.styledMapType);
     this.map.setMapTypeId('styled_map');
     this.api.getAttractions().subscribe(data => {
+      console.log(data);
       let attractionsRes = <any>data;
-      this.attractions = attractionsRes._embedded.attractions;
+      //this.attractions = attractionsRes._embedded.attractions;
+      this.attractions = attractionsRes;
       this.attractions.forEach(attraction => {
         //this.api.getAttractionPosition(attraction).subscribe(data => {
         //let pos = <any>data;
         attraction.position = new google.maps.LatLng(attraction.position.latitude, attraction.position.longitude);
-        let inRoute = !!this.activeRoute.attractions.find(x => x.id == attraction.id);
-        let color = inRoute ? 'green' : 'red';
+        let color;
+        if (this.activeRoute && this.activeRoute.attractions.length > 0) {
+          let inRoute = !!this.activeRoute.attractions.find(x => x.id == attraction.id);
+          color = inRoute ? 'green' : 'red';
+        } else {
+          color = 'green';
+        }
         let marker = this.createMarker(attraction.position, color);
         this.markers.push({ id: attraction.id, marker });
         marker.addListener('click', () => {
@@ -111,9 +123,11 @@ export class HomePage {
       console.log('Updated user position');
       let updatedPosition = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
       this.userMarker.setPosition(updatedPosition);
-      if (this.activeRoute.attractions) {
+      if (this.activeRoute && this.activeRoute.attractions) {
         this.activeRoute.attractions.forEach(attraction => {
-          console.log(`The distance between the user and ${attraction.title} is ${this.getDistance(updatedPosition, attraction.position)} meters.`);
+          if (attraction.position) {
+            console.log(`The distance between the user and ${attraction.title} is ${this.getDistance(updatedPosition, attraction.position)} meters.`);
+          }
         });
       }
     });
@@ -192,7 +206,7 @@ export class HomePage {
 
   onSelect(item: any): void {
     this.selectedAttraction = item;
-    this.selectedAttraction.inRoute = !!this.activeRoute._embedded.attractions.find(x => x.id == this.selectedAttraction.id);
+    this.selectedAttraction.inRoute = !!this.activeRoute.attractions.find(x => x.id == this.selectedAttraction.id);
   }
 
   unselectAttraction(): void {

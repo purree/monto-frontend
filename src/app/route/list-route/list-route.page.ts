@@ -10,6 +10,7 @@ export class ListRoutePage implements OnInit {
 
   private routes: any;
   private myActiveRouteId: any;
+  private searchTerm: string = '';
   private segment: any = "All";
 
   constructor(private api: ApiService) {
@@ -47,8 +48,14 @@ export class ListRoutePage implements OnInit {
   }
 
   searchRoutes() {
-    // TODO: implement search by route
-    // this.api.searchRoutes
+    if (this.searchTerm == '') {
+      this.getDefualtRoutes();
+      return;
+    }
+    this.api.searchRouteByTitle(this.searchTerm).subscribe(response => {
+      let routesResponse = <any> response;
+      this.routes = routesResponse._embedded.routes;
+    });
   }
 
   segmentChanged($event) {

@@ -14,8 +14,13 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { File } from '@ionic-native/file/ngx';
+
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,6 +29,8 @@ import { File } from '@ionic-native/file/ngx';
     BrowserModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
+    AngularFireModule.initializeApp(environment.firebaseConfig), // <-- firebase here
+    AngularFireAuthModule,
     AppRoutingModule,
     HttpClientModule
   ],
@@ -34,8 +41,9 @@ import { File } from '@ionic-native/file/ngx';
     NativeGeocoder,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     SocialSharing,
+    GooglePlus,
     File
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

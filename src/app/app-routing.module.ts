@@ -43,6 +43,8 @@ const routes: Routes = [
     path: 'detail-creator/:id', 
     loadChildren: './creator/detail-creator/detail-creator.module#DetailCreatorPageModule' 
   },
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
+  { path: 'sign-up', loadChildren: './sign-up/sign-up.module#SignUpPageModule' },
   /*
   {
     path: 'find-route',

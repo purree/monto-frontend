@@ -49,20 +49,20 @@ export class DetailRoutePage implements OnInit {
     console.log(this.activatedRoute.snapshot);
     this.api.getRoute(this.routeId).subscribe(data => {
       this.route = data;
-      this.route.attractions = this.route._embedded.attractions;
+      //this.route.attractions = this.route._embedded.attractions;
       this.routeForm = this.formBuilder.group({
         name: [this.route.routeName, Validators.required],
         description: [this.route.description],
         public: this.route.public
       });
-      this.api.getRouteCreator(this.route).subscribe(data => {
+      /*this.api.getRouteCreator(this.route).subscribe(data => {
         this.route.creator = data;
         this.api.getUser().then((userHref) => this.isRouteCreator = userHref == this.route.creator._links.self.href);
       });
       this.api.getRouteRatings(this.route).subscribe(data => {
         let ratingsResponse = <any>data;
         this.route.ratings = ratingsResponse._embedded.ratings;
-      });
+      });*/
     });
     this.api.getUser().then(userHref => {
       this.api.getMyActiveRoute(userHref).subscribe(data => {

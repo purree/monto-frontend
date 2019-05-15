@@ -31,7 +31,8 @@ export class ListPage implements OnInit {
   getDefualtAttractions() {
     this.api.getAttractions().subscribe(data => {
       let attractionsResponse = <any>data;
-      this.attractions = attractionsResponse._embedded.attractions;
+      this.attractions = attractionsResponse;
+      //this.attractions = attractionsResponse._embedded.attractions;
     });
   }
 }

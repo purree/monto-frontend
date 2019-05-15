@@ -47,6 +47,11 @@ export class AppComponent {
       title: 'Sign out',
       url: '/sign-out',
       icon: 'log-out'
+    },
+    {
+      title: 'Sign in',
+      url: '/login',
+      icon: 'log-in'
     }
   ];
 

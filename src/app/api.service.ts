@@ -16,11 +16,25 @@ export class ApiService {
   }
 
   async getUser() {
-     return await this.storage.get('userHref').then((userHref) => userHref);
+    return await this.storage.get('userHref').then((userHref) => userHref);
+  }
+
+  findByEmail(username: string) {
+    return this.http.get(`${apiUrl}/users/search/findByEmail?email=${username}`);
+  }
+
+  createUser(userData) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    console.log(userData);
+    return this.http.post(`${apiUrl}/users/`, userData, httpOptions);
   }
 
   getAttraction(id: any) {
-    return this.http.get(`${apiUrl}/attraction-with-meta/${id}`);
+    return this.http.get(`${apiUrl}/attractions-with-meta/${id}`);
   }
 
   getAttractionPosition(attraction: any) {
@@ -28,11 +42,11 @@ export class ApiService {
   }
 
   getAttractions() {
-    return this.http.get(`${apiUrl}/attractions?size=40`);
+    return this.http.get(`${apiUrl}/attractions-with-meta?size=40`);
   }
 
   findAttractionsByTitle(searchTerm: String) {
-    return this.http.get(`${apiUrl}/attractions/search/findByTitleIgnoreCaseContaining?title=${searchTerm}`);
+    return this.http.get(`${apiUrl}/attractions/search/findByTitleIgnoreCaseContainingAndCategory_Name?title=${searchTerm}&category=statue`);
   }
 
   getMyRoutes(userHref) {
@@ -40,7 +54,7 @@ export class ApiService {
   }
 
   getMyActiveRoute(userHref) {
-      return this.http.get(`${userHref}/activeRoute`);
+    return this.http.get(`${userHref}/activeRoute`);
   }
 
   setMyActiveRoute(userHref, activeRoute) {
@@ -66,7 +80,11 @@ export class ApiService {
   }
 
   getRoute(id: any) {
-    return this.http.get(`${apiUrl}/routes/${id}`);
+    return this.http.get(`${apiUrl}/routes-with-meta/${id}`);
+  }
+
+  searchRouteByTitle(searchTerm:string) {
+    return this.http.get(`${apiUrl}/routes/search/findByRouteNameIgnoreCaseContaining?routeName=${searchTerm}`)
   }
 
   getRouteCreator(route: any) {
@@ -124,7 +142,7 @@ export class ApiService {
     return this.http.get(`${apiUrl}/creators`);
   }
 
-  getCreator(creatorId){
+  getCreator(creatorId) {
     return this.http.get(`${apiUrl}/creators/${creatorId}`);
   }
 
