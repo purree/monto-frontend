@@ -18,13 +18,15 @@ export class HomePage {
   map: any;
   directionsService: any;
   directionsDisplay: any;
-  address: string;
+  //address: string;
   attractions: any;
   selectedAttraction: any;
   activeRoute: any;
   userMarker: any;
   markers: any = [];
+  currentAttraction: any; // this is the attraction you arrive at
   routeStarted: boolean = false;
+  distanceThreshold: number = 30;
 
   constructor(
     private http: HttpClient,
@@ -126,11 +128,27 @@ export class HomePage {
       if (this.activeRoute && this.activeRoute.attractions) {
         this.activeRoute.attractions.forEach(attraction => {
           if (attraction.position) {
+            let distance:number = this.getDistance(updatedPosition, attraction.position)
             console.log(`The distance between the user and ${attraction.title} is ${this.getDistance(updatedPosition, attraction.position)} meters.`);
+            if (distance <= this.distanceThreshold && !attraction.seen) {
+              this.arrivedAtAttraction(attraction);
+              attraction.seen = true;
+            }
           }
         });
       }
     });
+  }
+
+  arrivedAtAttraction(attraction) {
+    this.currentAttraction = attraction;
+    this.api.getUser().then((user) => {
+      this.api.addToSeenAttractions(user, attraction.id).subscribe();
+    });
+  }
+
+  closePopup() {
+    this.currentAttraction = null;
   }
 
   createMarker(position, color) {
@@ -219,7 +237,7 @@ export class HomePage {
     return x * Math.PI / 180;
   };
 
-  getDistance(p1, p2) {
+  getDistance(p1, p2): number {
     const earthRadius = 6378137; // Earth’s mean radius in meter
     const diffLat = this.rad(p2.lat() - p1.lat());
     const diffLong = this.rad(p2.lng() - p1.lng());
@@ -228,7 +246,7 @@ export class HomePage {
       Math.sin(diffLong / 2) * Math.sin(diffLong / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = earthRadius * c;
-    return distance; // returns the distance in meter
+    return Number(distance); // returns the distance in meter
   };
 
   private styledMapType = new google.maps.StyledMapType(
@@ -279,6 +297,7 @@ export class HomePage {
     ],
     { name: 'Styled Map' });
 
+  /*  
   getAddressFromCoords(lattitude, longitude) {
     console.log("getAddressFromCoords " + lattitude + " " + longitude);
     let options: NativeGeocoderOptions = {
@@ -304,5 +323,5 @@ export class HomePage {
         this.address = "Address Not Available!";
       });
   }
-
+*/
 }

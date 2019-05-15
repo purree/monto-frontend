@@ -33,6 +33,22 @@ export class ApiService {
     return this.http.post(`${apiUrl}/users/`, userData, httpOptions);
   }
 
+  addToSeenAttractions(userHref, attractionId) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    let body = {
+      "_links": {
+        "attractions": [
+          `${apiUrl}/attractions/${attractionId}`
+        ]
+      }
+    }
+    return this.http.patch(`${userHref}/seenAttractions`, body, httpOptions);
+  }
+
   getAttraction(id: any) {
     return this.http.get(`${apiUrl}/attractions-with-meta/${id}`);
   }
@@ -83,7 +99,7 @@ export class ApiService {
     return this.http.get(`${apiUrl}/routes-with-meta/${id}`);
   }
 
-  searchRouteByTitle(searchTerm:string) {
+  searchRouteByTitle(searchTerm: string) {
     return this.http.get(`${apiUrl}/routes/search/findByRouteNameIgnoreCaseContaining?routeName=${searchTerm}`)
   }
 

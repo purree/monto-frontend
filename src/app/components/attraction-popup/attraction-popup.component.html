@@ -1,0 +1,12 @@
+<ion-card id="card" class="map-card" padding>
+  <ion-icon class="card-close-icon ion-text-right" (click)="closePopup()" name="close"></ion-icon>
+  <ion-card-title>
+    {{ attraction.titleEnglish }}
+  </ion-card-title>
+  <p>
+    You've arrived at the "{{ attraction.titleEnglish }}" monument.
+  </p>
+  <ion-button expand="block" [routerLink]="'/list/' + attraction.id">
+    View info
+  </ion-button>
+</ion-card>
