@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../api.service';
+import { Router } from '@angular/router';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { File } from '@ionic-native/file/ngx';
@@ -12,11 +13,10 @@ import { File } from '@ionic-native/file/ngx';
 })
 export class DetailRoutePage implements OnInit {
 
-  private route: any;
-  private routeId: any;
-  private myActiveRouteId: any;
-  private isRouteCreator: any;
+  private isRouteCreator: boolean;
   private isActive: boolean;
+  private myActiveRouteId: any;
+  private route: any;
   private text: string;
   private url: string;
 
@@ -28,7 +28,8 @@ export class DetailRoutePage implements OnInit {
     private file: File,
     private activatedRoute: ActivatedRoute,
     private api: ApiService,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private router: Router) {
     this.url = window.location.pathname;
   }
 
@@ -36,43 +37,48 @@ export class DetailRoutePage implements OnInit {
   }
 
   ionViewWillLeave() {
-    let routeData = {
-      "routeName": this.routeForm.value.name,
-      "description": this.routeForm.value.description,
-      "public": this.routeForm.value.public
+    if (this.isRouteCreator) {
+      let routeData = {
+        "routeName": this.routeForm.value.name,
+        "description": this.routeForm.value.description,
+        "public": this.routeForm.value.public
+      }
+      this.api.patchRoute(this.route.id, routeData).subscribe(data => console.log(data));
     }
-    this.api.patchRoute(this.routeId, routeData).subscribe(data => console.log(data));
   }
 
   ionViewWillEnter() {
-    this.routeId = this.activatedRoute.snapshot.paramMap.get('id');
-    console.log(this.activatedRoute.snapshot);
-    this.api.getRoute(this.routeId).subscribe(data => {
+    let routeId = this.activatedRoute.snapshot.paramMap.get('id');
+    this.api.getRoute(routeId).subscribe(data => {
       this.route = data;
-      //this.route.attractions = this.route._embedded.attractions;
-      this.routeForm = this.formBuilder.group({
-        name: [this.route.routeName, Validators.required],
-        description: [this.route.description],
-        public: this.route.public
-      });
-      /*this.api.getRouteCreator(this.route).subscribe(data => {
+      this.api.getRouteCreator(this.route.id).subscribe(data => {
         this.route.creator = data;
-        this.api.getUser().then((userHref) => this.isRouteCreator = userHref == this.route.creator._links.self.href);
+        this.api.getUser().then((userHref) => {
+          this.isRouteCreator = userHref == this.route.creator._links.self.href;
+          if(this.isRouteCreator) {
+            this.routeForm = this.formBuilder.group({
+              name: [this.route.routeName, Validators.required],
+              description: [this.route.description],
+              public: this.route.public
+            });
+          }
+        });
       });
-      this.api.getRouteRatings(this.route).subscribe(data => {
-        let ratingsResponse = <any>data;
-        this.route.ratings = ratingsResponse._embedded.ratings;
-      });*/
+      this.api.getUser().then(userHref => {
+        this.api.getMyActiveRoute(userHref).subscribe(data => {
+          if (data) {
+            let activeRouteResonse = <any>data;
+            this.myActiveRouteId = activeRouteResonse.id;
+            this.isActive = this.myActiveRouteId == this.route.id;
+          }
+        });
+      });
     });
-    this.api.getUser().then(userHref => {
-      this.api.getMyActiveRoute(userHref).subscribe(data => {
-        if (data) {
-          let activeRouteResonse = <any>data;
-          this.myActiveRouteId = activeRouteResonse.id;
-          this.isActive = this.myActiveRouteId == this.routeId;
-        }
-      });
-    })
+  }
+
+  deleteRoute() {
+    this.api.deleteRoute(this.route.id).subscribe(x => console.log);
+    this.router.navigateByUrl('/list-route');
   }
 
   setActiveRoute() {
@@ -85,7 +91,7 @@ export class DetailRoutePage implements OnInit {
   }
 
   removeAttractionFromRoute(attractionId) {
-    this.api.removeAttractionFromRoute(this.routeId, attractionId).subscribe(data => {
+    this.api.removeAttractionFromRoute(this.route.id, attractionId).subscribe(data => {
       if (!data) {
         this.route.attractions = this.route.attractions.filter(x => x.id !== attractionId);
       }

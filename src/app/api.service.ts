@@ -127,12 +127,16 @@ export class ApiService {
     return this.http.get(`${apiUrl}/routes-with-meta/${id}`);
   }
 
+  deleteRoute(id: any){
+    return this.http.delete(`${apiUrl}/routes/${id}`);
+  }
+
   searchRouteByTitle(searchTerm: string) {
     return this.http.get(`${apiUrl}/routes/search/findByRouteNameIgnoreCaseContaining?routeName=${searchTerm}`)
   }
 
-  getRouteCreator(route: any) {
-    return this.http.get(`${apiUrl}/routes/${route.id}/routeCreator`);
+  getRouteCreator(routeId: any) {
+    return this.http.get(`${apiUrl}/routes/${routeId}/routeCreator`);
   }
 
   getRouteAttractions(route: any) {

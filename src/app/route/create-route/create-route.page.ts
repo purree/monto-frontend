@@ -32,21 +32,14 @@ export class CreateRoutePage implements OnInit {
     if (this.routeForm.invalid) {
       return;
     }
-    // TODO: change to actual user...
-    let userHref;
-    this.storage.get('userHref').then((val) => {
-      console.log(val);
-      userHref = val;
+    this.storage.get('userHref').then((userHref) => {
       let routeData = {
         "routeName": this.routeForm.value.name,
         "description": this.routeForm.value.description,
         "public": this.routeForm.value.public,
         "routeCreator": userHref
       }
-      this.api.createRoute(routeData).subscribe(data => {
-        console.log(data);
-        this.router.navigateByUrl('/list-route');
-      });
+      this.api.createRoute(routeData).subscribe(() => this.router.navigateByUrl('/list-route'));
     });
   }
 }
