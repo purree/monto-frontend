@@ -23,8 +23,15 @@
       </ion-grid>
     </div>
   </div>
+  <ion-fab *ngIf="routeStarted" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="popupForUserSpot = true">  
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 
+<app-show-userspot *ngIf="selectedUserSpot" (close)="closeUserSpotPopup($event)" [userSpot]="selectedUserSpot"></app-show-userspot>
+<app-create-userspot *ngIf="popupForUserSpot" [activeRoute]="activeRoute" [userPosition]="userMarker" (userSpotCreated)="userSpotCreated($event)"></app-create-userspot>
 <app-attraction-popup *ngIf="currentAttraction" (close)="closePopup($event)" [attraction]="currentAttraction"></app-attraction-popup>
 
 <div *ngIf="selectedAttraction">

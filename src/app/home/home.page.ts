@@ -26,7 +26,10 @@ export class HomePage {
   markers: any = [];
   currentAttraction: any; // this is the attraction you arrive at
   routeStarted: boolean = false;
+  popupForUserSpot: boolean = false;
   distanceThreshold: number = 30;
+  userSpots: any;
+  selectedUserSpot: any;
 
   constructor(
     private http: HttpClient,
@@ -35,28 +38,31 @@ export class HomePage {
     private nativeGeocoder: NativeGeocoder
   ) { }
 
-  ionViewWillEnter() {
+  ionViewWillEnter() {}
+
+  ngOnInit() {
     this.api.getUser().then(userHref => {
       this.api.getMyActiveRoute(userHref).subscribe(data => {
         console.log(data);
         if (data) {
           this.activeRoute = data;
-          //this.activeRoute.attractions = this.activeRoute._embedded.attractions;
-          this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
-            let activeRouteAttractionsRes = <any>data;
-            this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
+          this.api.getRouteWithMeta(this.activeRoute.id).subscribe(response => {
+            this.activeRoute = response;
+            this.activeRoute.attractions.forEach(attraction => {
+              attraction.position = new google.maps.LatLng(attraction.position.latitude, attraction.position.longitude);
+            });
+            this.userSpots = this.activeRoute.attractions.filter(attraction => attraction.category.id == 2);
           });
         }
-
       }, error => {
         // A 404 on from the api means no user with that email exists
         console.log(error);
       },
-        () => this.loadMap());
+        // When the active route is fetched or error loadMap
+        () => this.loadMap()
+      );
     });
   }
-
-  ngOnInit() { }
 
   loadMap() {
     //let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
@@ -76,15 +82,13 @@ export class HomePage {
       //this.attractions = attractionsRes._embedded.attractions;
       this.attractions = attractionsRes;
       this.attractions.forEach(attraction => {
-        //this.api.getAttractionPosition(attraction).subscribe(data => {
-        //let pos = <any>data;
         attraction.position = new google.maps.LatLng(attraction.position.latitude, attraction.position.longitude);
         let color;
         if (this.activeRoute && this.activeRoute.attractions.length > 0) {
           let inRoute = !!this.activeRoute.attractions.find(x => x.id == attraction.id);
           color = inRoute ? 'green' : 'red';
         } else {
-          color = 'green';
+          color = 'red';
         }
         let marker = this.createMarker(attraction.position, color);
         this.markers.push({ id: attraction.id, marker });
@@ -92,8 +96,9 @@ export class HomePage {
           this.map.panTo(marker.getPosition());
           this.onSelect(attraction);
         });
-        //})
       });
+      console.log(this.userSpots);
+      this.renderUserSpots();
     });
     this.geolocation.getCurrentPosition().then((resp) => {
       let currentPosition = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
@@ -101,6 +106,36 @@ export class HomePage {
     }).catch((error) => {
       console.log('Error getting location', error);
     });
+  }
+
+  renderUserSpots() {
+    this.userSpots.forEach(spot => {
+      spot.position = new google.maps.LatLng(spot.position.latitude, spot.position.longitude);
+      let marker = this.createMarker(spot.position, 'yellow');
+      marker.addListener('click', () => {
+        this.map.panTo(marker.getPosition());
+        this.showUserSpotPopup(spot);
+      });
+    });
+  }
+
+  userSpotCreated(userSpot) {
+    this.popupForUserSpot = null;
+    this.userSpots.push(userSpot);
+    userSpot.position = new google.maps.LatLng(userSpot.position.latitude, userSpot.position.longitude);
+    let marker = this.createMarker(userSpot.position, 'yellow');
+    marker.addListener('click', () => {
+      this.map.panTo(marker.getPosition());
+      this.showUserSpotPopup(userSpot);
+    });
+  }
+
+  showUserSpotPopup(spot: any) {
+    this.selectedUserSpot = spot;
+  }
+
+  closeUserSpotPopup() {
+    this.selectedUserSpot = null;
   }
 
   createUserMarker(userPosition) {
@@ -120,6 +155,9 @@ export class HomePage {
       map: this.map,
       icon,
     });
+    this.userMarker.addListener('click', () => {
+      this.arrivedAtAttraction(this.activeRoute.attractions[0]);
+    });
     let watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
       console.log('Updated user position');
@@ -127,8 +165,8 @@ export class HomePage {
       this.userMarker.setPosition(updatedPosition);
       if (this.activeRoute && this.activeRoute.attractions) {
         this.activeRoute.attractions.forEach(attraction => {
-          if (attraction.position) {
-            let distance:number = this.getDistance(updatedPosition, attraction.position)
+          if (attraction.category.id == 1) {
+            let distance: number = this.getDistance(updatedPosition, attraction.position)
             console.log(`The distance between the user and ${attraction.title} is ${this.getDistance(updatedPosition, attraction.position)} meters.`);
             if (distance <= this.distanceThreshold && !attraction.seen) {
               this.arrivedAtAttraction(attraction);
@@ -166,10 +204,13 @@ export class HomePage {
     let farthestAttraction;
     let farthestAttractionDistance = 0;
     this.activeRoute.attractions.forEach(attraction => {
-      let distance = this.getDistance(this.userMarker.position, attraction.position);
-      if (distance > farthestAttractionDistance) {
-        farthestAttraction = attraction;
-        farthestAttractionDistance = distance;
+      console.log(attraction.position);
+      if (attraction.position != null) {
+        let distance = this.getDistance(this.userMarker.position, attraction.position);
+        if (distance > farthestAttractionDistance) {
+          farthestAttraction = attraction;
+          farthestAttractionDistance = distance;
+        }
       }
     });
     return farthestAttraction;
@@ -181,10 +222,19 @@ export class HomePage {
     this.markers = [];
     let wayPoints = [];
     this.activeRoute.attractions.forEach(attraction => {
-      attraction.position = this.attractions.find(x => x.id == attraction.id).position;
-      let marker = this.createMarker(attraction.position, 'green');
-      this.markers.push({ id: attraction.id, marker });
-      wayPoints.push({ location: attraction.position });
+      if (attraction.position != null && attraction.category.id == 1) {
+        let attr = this.attractions.find(x => x.id == attraction.id);
+        if (attr) {
+          attraction.position = attr.position;
+        }
+        let marker = this.createMarker(attraction.position, 'green');
+        marker.addListener('click', () => {
+          this.map.panTo(marker.getPosition());
+          this.onSelect(attraction);
+        });
+        this.markers.push({ id: attraction.id, marker });
+        wayPoints.push({ location: attraction.position });
+      }
     });
     this.directionsService = new google.maps.DirectionsService;
     this.directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
@@ -204,7 +254,6 @@ export class HomePage {
   }
 
   addAttractionToRoute() {
-    console.log('activeRoutesHref: ' + this.activeRoute._links.attractions.href);
     this.api.addAttractionToRoute(this.activeRoute.id, this.selectedAttraction.id).subscribe(data => {
       this.activeRoute.attractions.push(this.selectedAttraction);
       this.selectedAttraction.inRoute = true;

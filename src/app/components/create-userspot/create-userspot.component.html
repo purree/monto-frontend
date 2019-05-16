@@ -1,0 +1,28 @@
+<ion-card class="map-card" padding>
+  <ion-card-title>Mark a spot</ion-card-title>
+  <!--
+    <form (ngSubmit)="saveSpot()">
+      -->
+  <ion-list>
+    <ion-item>
+      <ion-label>Category</ion-label>
+      <ion-select [(ngModel)]="category" (ionChange)="categoryChange()" placeholder="Select One" interface="popover">
+        <ion-select-option *ngFor="let option of userSpotCategoryOptions">{{ option.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="primary">Description</ion-label>
+      <ion-input [(ngModel)]="description"></ion-input>
+    </ion-item>
+  </ion-list>
+  <ion-button (click)="saveSpot()">
+    Add marker
+  </ion-button>
+  <!--
+
+      <ion-button type="submit" expand="block">
+        Add spot
+      </ion-button>
+    </form>
+  -->
+</ion-card>

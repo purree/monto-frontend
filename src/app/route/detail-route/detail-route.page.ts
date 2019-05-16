@@ -77,7 +77,8 @@ export class DetailRoutePage implements OnInit {
 
   setActiveRoute() {
     this.api.getUser().then(userHref => {
-      this.api.setMyActiveRoute(userHref, this.route._links.self.href).subscribe(data => {
+      console.log(this.route);
+      this.api.setMyActiveRoute(userHref, this.route.id).subscribe(data => {
         this.isActive = true;
       });
     });

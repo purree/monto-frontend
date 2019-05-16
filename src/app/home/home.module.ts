@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 import { AttractionPopupComponent } from '../components/attraction-popup/attraction-popup.component';
+import { CreateUserspotComponent } from '../components/create-userspot/create-userspot.component';
+import { ShowUserspotComponent } from '../components/show-userspot/show-userspot.component';
 
 @NgModule({
   imports: [
@@ -19,6 +21,6 @@ import { AttractionPopupComponent } from '../components/attraction-popup/attract
       }
     ])
   ],
-  declarations: [HomePage, AttractionPopupComponent]
+  declarations: [HomePage, AttractionPopupComponent, CreateUserspotComponent, ShowUserspotComponent]
 })
 export class HomePageModule { }

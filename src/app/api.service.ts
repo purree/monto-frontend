@@ -49,6 +49,30 @@ export class ApiService {
     return this.http.patch(`${userHref}/seenAttractions`, body, httpOptions);
   }
 
+  
+  saveUserSpot(spotData) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post(`${apiUrl}/attractions`, spotData, httpOptions);
+  }
+
+  addPositionToAttraction(attractionId, positionId) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    const body = {
+      "_links": {
+        "position": `${apiUrl}/positions/${positionId}`
+      }
+    }
+    return this.http.put(`${apiUrl}/attractions/${attractionId}/position`, body, httpOptions);
+  }
+
   getAttraction(id: any) {
     return this.http.get(`${apiUrl}/attractions-with-meta/${id}`);
   }
@@ -69,11 +93,15 @@ export class ApiService {
     return this.http.get(`${userHref}/routes`);
   }
 
+  getRouteWithMeta(routeId) {
+    return this.http.get(`${apiUrl}/routes-with-meta/${routeId}`);
+  }
+
   getMyActiveRoute(userHref) {
     return this.http.get(`${userHref}/activeRoute`);
   }
 
-  setMyActiveRoute(userHref, activeRoute) {
+  setMyActiveRoute(userHref, activeRouteId) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -81,7 +109,7 @@ export class ApiService {
     };
     let body = {
       "_links": {
-        "activeRoute": activeRoute
+        "activeRoute": `${apiUrl}/routes/${activeRouteId}`
       }
     }
     return this.http.put(`${userHref}/activeRoute`, body);
@@ -148,6 +176,15 @@ export class ApiService {
       }
     }
     return this.http.patch(`${apiUrl}/routes/${activeRouteId}/attractions`, body, httpOptions);
+  }
+
+  addPosition(positionData) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post(`${apiUrl}/positions`, positionData, httpOptions);
   }
 
   removeAttractionFromRoute(routeId, attractionId) {
