@@ -31,16 +31,13 @@ export class AttractionDetailPage implements OnInit {
       this.api.getUser().then(userHref => {
         this.api.getMyActiveRoute(userHref).subscribe(data => {
           this.activeRoute = data;
-         // this.inActiveRoute = !!this.activeRoute._embedded.attractions.find(x => x.id == this.attraction.id);
-          /*console.log(this.activeRoute);
-          console.log(this.activeRoute._embedded.attractions);*/
           this.api.getMyActiveRouteAttractions(this.activeRoute).subscribe(data => {
             let activeRouteAttractionsRes = <any>data;
             console.log(activeRouteAttractionsRes);
             this.activeRoute.attractions = activeRouteAttractionsRes._embedded.attractions;
             this.inActiveRoute = !!this.activeRoute.attractions.find(x => x.id == this.attraction.id);
           });
-        });
+        }, error => console.log('No active route!'));
       });
     });
   }

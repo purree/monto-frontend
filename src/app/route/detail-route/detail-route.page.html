@@ -83,9 +83,14 @@
       </ion-label>
     </ion-item>
   </ion-list>
-  <ion-button [disabled]="isActive" expand="block" (click)="setActiveRoute()">
+  <ion-button *ngIf="!isActive; else unset" expand="block" (click)="setActiveRoute()">
     Set active route
   </ion-button>
+  <ng-template #unset>
+      <ion-button color="danger" expand="block" (click)="unsetActiveRoute()">
+          Unset active route
+        </ion-button>
+  </ng-template>
 
   <ion-fab color="light" vertical="top" horizontal="end">
     <ion-fab-button>

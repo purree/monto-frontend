@@ -14,6 +14,7 @@ export class CreateUserspotComponent implements OnInit {
   @Input() activeRoute: any;
   @Input() userPosition: any;
   @Output() userSpotCreated: EventEmitter<any> = new EventEmitter<any>();
+  @Output() close: EventEmitter<void> = new EventEmitter<void>();
 
 
   category: any;
@@ -39,6 +40,10 @@ export class CreateUserspotComponent implements OnInit {
     if (this.description == '') {
       this.description = this.userSpotCategoryOptions.find(usco => usco.name == this.category).defaultDescription;
     }
+  }
+
+  closeCreateUserSpotPopup() {
+    this.close.emit();
   }
 
   saveSpot() {

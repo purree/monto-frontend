@@ -71,7 +71,7 @@ export class DetailRoutePage implements OnInit {
             this.myActiveRouteId = activeRouteResonse.id;
             this.isActive = this.myActiveRouteId == this.route.id;
           }
-        });
+        }, error => console.log(error));
       });
     });
   }
@@ -83,9 +83,16 @@ export class DetailRoutePage implements OnInit {
 
   setActiveRoute() {
     this.api.getUser().then(userHref => {
-      console.log(this.route);
       this.api.setMyActiveRoute(userHref, this.route.id).subscribe(data => {
         this.isActive = true;
+      });
+    });
+  }
+
+  unsetActiveRoute() {
+    this.api.getUser().then(userHref => {
+      this.api.unsetMyActiveRoute(userHref).subscribe(data => {
+        this.isActive = false;
       });
     });
   }

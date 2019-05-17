@@ -8,6 +8,7 @@ import { HomePage } from './home.page';
 import { AttractionPopupComponent } from '../components/attraction-popup/attraction-popup.component';
 import { CreateUserspotComponent } from '../components/create-userspot/create-userspot.component';
 import { ShowUserspotComponent } from '../components/show-userspot/show-userspot.component';
+import { StartNewRouteComponent } from '../components/start-new-route/start-new-route.component';
 
 @NgModule({
   imports: [
@@ -21,6 +22,6 @@ import { ShowUserspotComponent } from '../components/show-userspot/show-userspot
       }
     ])
   ],
-  declarations: [HomePage, AttractionPopupComponent, CreateUserspotComponent, ShowUserspotComponent]
+  declarations: [HomePage, AttractionPopupComponent, CreateUserspotComponent, ShowUserspotComponent, StartNewRouteComponent]
 })
 export class HomePageModule { }

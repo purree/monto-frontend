@@ -24,7 +24,14 @@ export class ListRoutePage implements OnInit {
           this.myActiveRouteId = activeRouteResonse.id;
         }
         this.getDefualtRoutes();
-      });
+      }, error => {
+        // A 404 on from the api means no user with that email exists
+        console.log('No activeRoute set!');
+        console.log(error);
+        this.myActiveRouteId = null;
+        this.getDefualtRoutes();
+      }
+      );
     });
   }
 

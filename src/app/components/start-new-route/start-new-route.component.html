@@ -1,0 +1,15 @@
+<ion-card class="map-card" padding>
+  <ion-icon class="card-close-icon ion-text-right" (click)="handleClose()" name="close"></ion-icon>
+  <ion-card-title>
+    {{ activeRoute?.routeName }}
+  </ion-card-title>
+  <p>
+    {{activeRoute?.attractions?.length }} statues in route
+  </p>
+  <ion-button (click)="handleStartRoute()">
+    Walk now
+  </ion-button>
+  <ion-button [routerLink]="'/detail-route/' + activeRoute?.id">
+    Edit route
+  </ion-button>
+</ion-card>

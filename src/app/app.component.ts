@@ -19,24 +19,24 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'Statues',
-      url: '/list',
-      icon: 'list'
-    },
-    {
-      title: 'Profile',
-      url: '/profile',
-      icon: 'contact'
-    },
-    {
       title: 'Routes',
       url: '/list-route',
       icon: 'search'
     },
     {
+      title: 'Statues',
+      url: '/list',
+      icon: 'list'
+    },
+    {
       title: 'Creators',
       url: '/list-creator',
       icon: 'person'
+    },
+    {
+      title: 'Profile',
+      url: '/profile',
+      icon: 'contact'
     },
     {
       title: 'Settings',
@@ -47,11 +47,6 @@ export class AppComponent {
       title: 'Sign out',
       url: '/sign-out',
       icon: 'log-out'
-    },
-    {
-      title: 'Sign in',
-      url: '/login',
-      icon: 'log-in'
     }
   ];
 
@@ -62,8 +57,7 @@ export class AppComponent {
     private storage: Storage
   ) {
     this.initializeApp();
-    // TODO: set actual user
-    storage.set('userHref', 'http://localhost:8080/users/1');
+    //storage.set('userHref', 'http://localhost:8080/users/1');
   }
 
   initializeApp() {

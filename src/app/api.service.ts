@@ -115,6 +115,10 @@ export class ApiService {
     return this.http.put(`${userHref}/activeRoute`, body);
   }
 
+  unsetMyActiveRoute(userHref) {
+    return this.http.delete(`${userHref}/activeRoute`);
+  }
+
   getMyActiveRouteAttractions(activeRoute: any) {
     return this.http.get(activeRoute._links.attractions.href);
   }
