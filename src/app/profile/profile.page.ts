@@ -10,7 +10,7 @@ import { Storage } from '@ionic/storage';
   })
 export class ProfilePage {
 
-  private user:any;
+  user:any;
 
   constructor(private http: HttpClient, private storage:Storage) {
   }

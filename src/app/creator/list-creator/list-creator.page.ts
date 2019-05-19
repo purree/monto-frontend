@@ -9,8 +9,8 @@ import { ApiService } from '../../api.service';
 })
 export class ListCreatorPage implements OnInit {
 
-  private creators: any;
-  private searchTerm: String = '';
+  creators: any;
+  searchTerm: String = '';
 
   constructor(private api: ApiService) { }
 

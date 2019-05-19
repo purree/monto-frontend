@@ -11,7 +11,7 @@ import { Storage } from '@ionic/storage';
 })
 export class SignUpPage implements OnInit {
 
-  private user: any;
+  user: any;
   userForm: FormGroup;
 
 

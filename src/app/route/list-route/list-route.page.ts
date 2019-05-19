@@ -8,10 +8,10 @@ import { ApiService } from '../../api.service';
 })
 export class ListRoutePage implements OnInit {
 
-  private routes: any;
-  private myActiveRouteId: any;
-  private searchTerm: string = '';
-  private segment: any = "All";
+  routes: any;
+  myActiveRouteId: any;
+  searchTerm: string = '';
+  segment: any = "All";
 
   constructor(private api: ApiService) {
   }

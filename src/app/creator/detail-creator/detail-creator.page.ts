@@ -9,7 +9,7 @@ import { ApiService } from '../../api.service';
 })
 export class DetailCreatorPage implements OnInit {
 
-  private creator: any;
+  creator: any;
 
   constructor(private route: ActivatedRoute, private api: ApiService) { }
 

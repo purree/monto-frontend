@@ -7,8 +7,8 @@ import { ApiService } from '../../api.service';
   styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
-  private attractions: any;
-  private searchTerm: String = '';
+  attractions: any;
+  searchTerm: String = '';
 
   constructor(private api: ApiService) {
     this.getDefualtAttractions();

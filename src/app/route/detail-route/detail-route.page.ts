@@ -13,12 +13,12 @@ import { File } from '@ionic-native/file/ngx';
 })
 export class DetailRoutePage implements OnInit {
 
-  private isRouteCreator: boolean;
-  private isActive: boolean;
-  private myActiveRouteId: any;
-  private route: any;
-  private text: string;
-  private url: string;
+  isRouteCreator: boolean;
+  isActive: boolean;
+  myActiveRouteId: any;
+  route: any;
+  text: string;
+  url: string;
 
   routeForm: FormGroup;
 

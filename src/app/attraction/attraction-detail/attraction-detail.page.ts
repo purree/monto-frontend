@@ -13,9 +13,9 @@ export class AttractionDetailPage implements OnInit {
 
   @ViewChild('map') mapElement: ElementRef;
   map: any;
-  private attraction: any;
-  private activeRoute: any;
-  private inActiveRoute: boolean = true;
+  attraction: any;
+  activeRoute: any;
+  inActiveRoute: boolean = true;
 
   constructor(private route: ActivatedRoute, private api: ApiService) { }
 
