@@ -1,10 +1,13 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <ion-button expand="block" color="danger" (click)="googleLogin()">Google Login</ion-button>
-  <h1>{{ user?.displayName }}</h1>
+  <ion-grid style="height: 100%">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+      <ion-spinner *ngIf="loading; else loginBtn" name="crescent"></ion-spinner>
+      <ng-template #loginBtn>
+        <ion-button expand="block" (click)="googleLogin()">
+          <ion-icon name="logo-google"></ion-icon>
+          Sign in with Google
+        </ion-button>
+      </ng-template>
+    </ion-row>
+  </ion-grid>
 </ion-content>
