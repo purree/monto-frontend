@@ -3,6 +3,7 @@ import { ApiService } from '../api.service';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { MenuController } from '@ionic/angular';
 
 declare var google;
 
@@ -34,10 +35,15 @@ export class HomePage {
   constructor(
     private api: ApiService,
     private geolocation: Geolocation,
-    private nativeGeocoder: NativeGeocoder
-  ) { }
+    private nativeGeocoder: NativeGeocoder,
+    private menuCtrl: MenuController
+  ) {
 
-  ionViewWillEnter() { }
+  }
+
+  ionViewWillEnter() {
+    this.menuCtrl.enable(true);
+  }
 
   ngOnInit() {
     this.api.getUser().then(userHref => {

@@ -3,8 +3,7 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Storage } from '@ionic/storage';
-
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -42,11 +41,6 @@ export class AppComponent {
       title: 'Settings',
       url: '/settings',
       icon: 'settings'
-    },
-    {
-      title: 'Sign out',
-      url: '/sign-out',
-      icon: 'log-out'
     }
   ];
 
@@ -54,10 +48,13 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private storage: Storage
+    private auth: AuthService,
   ) {
     this.initializeApp();
-    //storage.set('userHref', 'http://localhost:8080/users/1');
+  }
+
+  signOut() {
+    this.auth.signOut();
   }
 
   initializeApp() {
