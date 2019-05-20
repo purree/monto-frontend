@@ -103,6 +103,7 @@ export class HomePage {
     });
     this.geolocation.getCurrentPosition().then((resp) => {
       let currentPosition = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+      console.log(currentPosition);
       this.createUserMarker(currentPosition);
     }).catch((error) => {
       console.log('Error getting location', error);

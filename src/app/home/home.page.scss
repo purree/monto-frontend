@@ -62,3 +62,12 @@
   background: transparent;
   border:none;
 }
+
+ion-content {
+  --offset-top: 0 !important;
+}
+
+ion-toolbar {
+  --background: transparent;
+  --border-style:none;
+}

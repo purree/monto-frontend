@@ -13,14 +13,16 @@
       <ion-grid class="full-width-grid">
         <ion-row>
           <ion-col>
-            <ion-button *ngIf="!isTempRoute; else createRoute" (click)="startRoute()" class="map-float-btn ion-margin-horizontal" expand="block">
-              Start route
-            </ion-button>
-            <ng-template #createRoute>
-              <ion-button (click)="createTempRoute()" class="map-float-btn ion-margin-horizontal" expand="block">
-                Create route
+            <div *ngIf="userMarker">
+              <ion-button *ngIf="!isTempRoute; else createRoute" (click)="startRoute()" class="map-float-btn ion-margin-horizontal" expand="block">
+                Start route
               </ion-button>
-            </ng-template>
+              <ng-template #createRoute>
+                <ion-button (click)="createTempRoute()" class="map-float-btn ion-margin-horizontal" expand="block">
+                  Create route
+                </ion-button>
+              </ng-template>
+            </div>
           </ion-col>
         </ion-row>
       </ion-grid>
