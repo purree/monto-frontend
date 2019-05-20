@@ -166,7 +166,7 @@ export class HomePage {
       animation: google.maps.Animation.Bounce,
       map: this.map,
       icon: {
-        url: 'http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
+        url: 'https://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png'
       }
     });
   }
