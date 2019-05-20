@@ -9,7 +9,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "deploy": "ionic build --prod -- --base-href https://purree.github.io/monto-frontend/ && npx angular-cli-ghpages --dir=www"
   },
   "private": true,
   "dependencies": {
