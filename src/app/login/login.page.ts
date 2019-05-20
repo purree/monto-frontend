@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import * as firebase from 'firebase/app';
 import { MenuController } from '@ionic/angular';
 
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 
 
 @Component({
@@ -30,8 +29,4 @@ export class LoginPage implements OnInit {
   googleLogin() {
     this.auth.googleLogin();
   }
-
-  firebaseLoginResponse = firebase.auth().getRedirectResult().then(response =>
-    this.auth.loginUser(response)
-  ).catch(error => console.log(error));
 }

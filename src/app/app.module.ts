@@ -21,6 +21,7 @@ import { File } from '@ionic-native/file/ngx';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
+import { AuthGuard } from './services/authGuard/auth-guard.guard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,7 +43,8 @@ import { environment } from '../environments/environment';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     SocialSharing,
     GooglePlus,
-    File
+    File,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

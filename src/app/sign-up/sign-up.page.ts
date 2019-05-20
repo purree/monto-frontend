@@ -3,6 +3,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ApiService } from '../api.service';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-sign-up',
@@ -16,12 +17,14 @@ export class SignUpPage implements OnInit {
 
 
   constructor(
+    private menuCtrl: MenuController,
     private formBuilder: FormBuilder,
     private api: ApiService,
     private router: Router,
     private storage: Storage) { }
 
   ionViewWillEnter() {
+    this.menuCtrl.enable(false);
     this.storage.get('user').then((user) => {
       this.user = user;
       console.log(this.user);
