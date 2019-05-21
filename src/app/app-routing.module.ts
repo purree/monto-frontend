@@ -43,27 +43,32 @@ const routes: Routes = [
     loadChildren: './route/detail-route/detail-route.module#DetailRoutePageModule',
     canActivate: [AuthGuard]
   },
-  { 
-    path: 'list-creator', 
+  {
+    path: 'list-creator',
     loadChildren: './creator/list-creator/list-creator.module#ListCreatorPageModule',
     canActivate: [AuthGuard]
   },
-  { 
-    path: 'detail-creator/:id', 
-    loadChildren: './creator/detail-creator/detail-creator.module#DetailCreatorPageModule' ,
+  {
+    path: 'detail-creator/:id',
+    loadChildren: './creator/detail-creator/detail-creator.module#DetailCreatorPageModule',
     canActivate: [AuthGuard]
   },
-  { 
-    path: 'login', 
+  {
+    path: 'login',
     loadChildren: './login/login.module#LoginPageModule'
-   },
-  { 
-    path: 'sign-up', 
+  },
+  {
+    path: 'sign-up',
     loadChildren: './sign-up/sign-up.module#SignUpPageModule'
-   },
-  { 
+  },
+  {
     path: 'create-review/:id',
     loadChildren: './review/create-review/create-review.module#CreateReviewPageModule',
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'edit-review/:id',
+    loadChildren: './review/edit-review/edit-review.module#EditReviewPageModule',
     canActivate: [AuthGuard]
   },
 ];

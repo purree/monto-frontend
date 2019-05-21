@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit review</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onDelete()">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form *ngIf="reviewForm" [formGroup]="reviewForm" (ngSubmit)="onSubmit()">
+    <ion-item no-line>
+      <ion-label position="floating" color="primary" required>Rating</ion-label>
+      <br />
+      <br />
+      <ion-radio-group formControlName="rating">
+        <ion-row>
+          <ion-col *ngFor="let i of [1,2,3,4,5]" no-padding>
+            <ion-item no-padding no-margin lines="none">
+              <ion-radio [value]="i"></ion-radio>
+              <ion-label>{{i}}</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-radio-group>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating" color="primary">Comment</ion-label>
+      <ion-textarea rows="6" formControlName="comment"></ion-textarea>
+    </ion-item>
+
+    <ion-grid class="full-width-grid">
+      <ion-row>
+        <ion-col>
+          <ion-button class="bottom-btn" expand="block" type="submit" [disabled]="!reviewForm?.valid">
+            Edit
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

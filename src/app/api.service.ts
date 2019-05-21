@@ -215,6 +215,18 @@ export class ApiService {
     return this.http.get(`${apiUrl}/creators/search/findByLastNameOrFirstNameIgnoreCaseContaining?lastName=${searchTerm}&firstName=${searchTerm}`);
   }
 
+  getReview(reviewId) {
+    return this.http.get(`${apiUrl}/ratings/${reviewId}`);
+  }
+
+  deleteReview(reviewId) {
+    return this.http.delete(`${apiUrl}/ratings/${reviewId}`);
+  }
+
+  patchReview(reviewId, patchData) {
+    return this.http.patch(`${apiUrl}/ratings/${reviewId}`, patchData);
+  }
+
   createReview(routeId, userHref, reviewData) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -235,4 +247,7 @@ export class ApiService {
     console.log(reviewBody);
     return this.http.post(`${apiUrl}/ratings`, reviewBody, httpOptions);
   }
+
+
+
 }
