@@ -27,7 +27,19 @@
     <ion-item *ngFor="let route of routes" [routerLink]="'/detail-route/' + route.id">
       <ion-label>
         <h2>{{route.routeName}}</h2>
-        <h3>{{route.description}}</h3>
+        <h5>
+          <span *ngIf="route.aggregatedRatings != 'NaN'; else noRatings">
+            <span *ngFor="let number of [1,2,3,4,5]">  
+              <ion-icon *ngIf="number <= route.aggregatedRatings; else outlineStar" slot="start" name="star"></ion-icon>
+              <ng-template #outlineStar>
+                <ion-icon slot="start" name="star-outline"></ion-icon>
+              </ng-template>
+            </span>
+          </span>
+          <ng-template #noRatings>
+            No reviews
+          </ng-template>
+        </h5>
       </ion-label>
       <div *ngIf="route.id === myActiveRouteId">
         <ion-icon color="primary" name="checkmark-circle-outline" size="small" slot="start"></ion-icon>

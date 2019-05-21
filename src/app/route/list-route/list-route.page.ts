@@ -42,6 +42,7 @@ export class ListRoutePage implements OnInit {
     this.api.getRoutes().subscribe(data => {
       let routesResponse = <any>data;
       this.routes = routesResponse._embedded.routes;
+      console.log(this.routes);
     });
   }
 
