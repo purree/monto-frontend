@@ -39,6 +39,7 @@ export class CreateRoutePage implements OnInit {
         "public": this.routeForm.value.public,
         "routeCreator": userHref
       }
+      'http://localhost:8080/routes/12/ratings'
       this.api.createRoute(routeData).subscribe(() => this.router.navigateByUrl('/list-route'));
     });
   }

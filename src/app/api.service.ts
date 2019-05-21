@@ -49,7 +49,7 @@ export class ApiService {
     return this.http.patch(`${userHref}/seenAttractions`, body, httpOptions);
   }
 
-  
+
   saveUserSpot(spotData) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -131,7 +131,7 @@ export class ApiService {
     return this.http.get(`${apiUrl}/routes-with-meta/${id}`);
   }
 
-  deleteRoute(id: any){
+  deleteRoute(id: any) {
     return this.http.delete(`${apiUrl}/routes/${id}`);
   }
 
@@ -213,5 +213,26 @@ export class ApiService {
 
   findCreatorsByName(searchTerm: String) {
     return this.http.get(`${apiUrl}/creators/search/findByLastNameOrFirstNameIgnoreCaseContaining?lastName=${searchTerm}&firstName=${searchTerm}`);
+  }
+
+  createReview(routeId, userHref, reviewData) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    let rb = {
+      "rating": 4,
+      "comment": "Nice route!",
+      "route": "http://localhost:8080/routes/12",
+      "ratingCreator": "http://localhost:8080/users/6"
+    }
+    let reviewBody = {
+      ...reviewData,
+      "route": `${apiUrl}/routes/${routeId}`,
+      "ratingCreator": userHref
+    }
+    console.log(reviewBody);
+    return this.http.post(`${apiUrl}/ratings`, reviewBody, httpOptions);
   }
 }

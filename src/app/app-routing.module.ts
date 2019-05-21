@@ -61,6 +61,11 @@ const routes: Routes = [
     path: 'sign-up', 
     loadChildren: './sign-up/sign-up.module#SignUpPageModule'
    },
+  { 
+    path: 'create-review/:id',
+    loadChildren: './review/create-review/create-review.module#CreateReviewPageModule',
+    canActivate: [AuthGuard]
+  },
 ];
 
 @NgModule({

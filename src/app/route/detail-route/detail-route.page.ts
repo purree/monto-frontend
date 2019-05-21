@@ -16,6 +16,7 @@ export class DetailRoutePage implements OnInit {
   isRouteCreator: boolean;
   isActive: boolean;
   myActiveRouteId: any;
+  showReviews: boolean = false;
   route: any;
   text: string;
   url: string;
@@ -95,6 +96,10 @@ export class DetailRoutePage implements OnInit {
         this.isActive = false;
       });
     });
+  }
+
+  toggleReviews() {
+    this.showReviews = !this.showReviews;
   }
 
   removeAttractionFromRoute(attractionId) {

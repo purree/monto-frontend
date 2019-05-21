@@ -17,6 +17,14 @@
     <h2>{{ route?.routeName }}</h2>
     <p>{{ route?.description }}</p>
   </div>
+  <span *ngIf="route?.aggregatedRatings != 'NaN'">
+    <span *ngFor="let number of [1,2,3,4,5]">
+      <ion-icon *ngIf="number <= route?.aggregatedRatings; else outlineStar" slot="start" name="star"></ion-icon>
+      <ng-template #outlineStar>
+        <ion-icon slot="start" name="star-outline"></ion-icon>
+      </ng-template>
+    </span>
+  </span>
   <ng-template #edit>
     <form [formGroup]="routeForm">
       <ion-item>
@@ -74,22 +82,39 @@
   </ion-list>
 
   <ion-list>
-    <ion-list-header>
-      Ratings
+    <ion-list-header >
+      <span (click)="toggleReviews()">
+        Reviews ({{ route?.ratings?.length || "0" }})
+      </span>
+      <ion-note [routerLink]="'/create-review/' + route?.id">
+        Add review
+      </ion-note>
     </ion-list-header>
-    <ion-item *ngFor="let rating of route?.ratings">
-      <ion-label>
-        {{ rating }}
-      </ion-label>
-    </ion-item>
+    <div *ngIf="showReviews && route.ratings">
+      <ion-item *ngFor="let rating of route?.ratings">
+        <ion-label>
+          <h2>
+            <span *ngFor="let number of [1,2,3,4,5]">
+              <ion-icon *ngIf="number <= rating.rating; else outlineStar" slot="start" name="star"></ion-icon>
+              <ng-template #outlineStar>
+                <ion-icon slot="start" name="star-outline"></ion-icon>
+              </ng-template>
+            </span>
+          </h2>
+          <h3>
+            {{ rating.comment }}
+          </h3>
+        </ion-label>
+      </ion-item>
+    </div>
   </ion-list>
   <ion-button *ngIf="!isActive; else unset" expand="block" (click)="setActiveRoute()">
     Set active route
   </ion-button>
   <ng-template #unset>
-      <ion-button color="danger" expand="block" (click)="unsetActiveRoute()">
-          Unset active route
-        </ion-button>
+    <ion-button color="danger" expand="block" (click)="unsetActiveRoute()">
+      Unset active route
+    </ion-button>
   </ng-template>
 
   <ion-fab color="light" vertical="top" horizontal="end">
