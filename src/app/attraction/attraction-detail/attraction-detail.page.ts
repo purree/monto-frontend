@@ -16,6 +16,7 @@ export class AttractionDetailPage implements OnInit {
   attraction: any;
   activeRoute: any;
   inActiveRoute: boolean = true;
+  showFunFact: boolean = false;
 
   constructor(private route: ActivatedRoute, private api: ApiService) { }
 
@@ -40,6 +41,10 @@ export class AttractionDetailPage implements OnInit {
         }, error => console.log('No active route!'));
       });
     });
+  }
+
+  toggleFunFact() {
+    this.showFunFact = !this.showFunFact;
   }
 
   addAttractionToRoute() {

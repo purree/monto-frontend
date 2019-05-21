@@ -1,0 +1,17 @@
+.floating-card {
+    display: block;
+    position: absolute;
+    width: 80vw;
+    top: 20vh;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: white;
+  }
+
+
+.card-close-icon {
+    font-size: 24px;
+    position: relative;
+    left: 90%;
+  }

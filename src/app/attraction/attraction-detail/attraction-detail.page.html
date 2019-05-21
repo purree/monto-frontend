@@ -19,9 +19,13 @@
   <h2>{{ attraction?.titleEnglish }}</h2>
   <h4>{{ attraction?.title }}</h4>
   <p>{{ attraction?.description }}</p>
+  <ion-button *ngIf="attraction && attraction.funFact" (click)="toggleFunFact()">
+    Fun fact
+  </ion-button>
+  <app-funfact-popup *ngIf="showFunFact" [funFact]="attraction.funFact" (close)="toggleFunFact()"></app-funfact-popup>
   <ion-list>
     <ion-list-header>Creator</ion-list-header>
-    <ion-chip *ngFor="let creator of attraction?.creators" [routerLink]="'/detail-creator/' + creator.id" >
+    <ion-chip *ngFor="let creator of attraction?.creators" [routerLink]="'/detail-creator/' + creator.id">
       <ion-label>{{ creator.firstName }} {{ creator.lastName }}</ion-label>
     </ion-chip>
   </ion-list>
