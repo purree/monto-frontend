@@ -151,7 +151,7 @@ export class HomePage {
     watch.subscribe((data) => {
       let updatedPosition = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
       this.userMarker.setPosition(updatedPosition);
-      if (this.activeRoute && this.activeRoute.attractions) {
+      if (this.activeRoute && this.routeStarted) {
         this.activeRoute.attractions.forEach(attraction => {
           if (attraction.category.id == 1) {
             let distance: number = this.getDistance(updatedPosition, attraction.position)
