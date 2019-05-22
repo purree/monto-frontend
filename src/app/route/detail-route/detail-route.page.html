@@ -82,7 +82,7 @@
   </ion-list>
 
   <ion-list>
-    <ion-list-header >
+    <ion-list-header>
       <span (click)="toggleReviews()">
         Reviews ({{ route?.ratings?.length || "0" }})
       </span>
@@ -100,10 +100,19 @@
                 <ion-icon slot="start" name="star-outline"></ion-icon>
               </ng-template>
             </span>
+            <ion-button *ngIf="auth.user.id == rating.userInfo.id" [routerLink]="'/edit-review/' + rating.id" class="edit-review-btn">
+              <ion-icon name="create"></ion-icon>
+            </ion-button>
           </h2>
           <h3>
             {{ rating.comment }}
           </h3>
+          <ion-chip>
+            <ion-avatar>
+              <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+            </ion-avatar>
+            <ion-label>{{ rating?.userInfo?.username }}</ion-label>
+          </ion-chip>
         </ion-label>
       </ion-item>
     </div>

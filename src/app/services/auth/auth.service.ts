@@ -79,9 +79,7 @@ export class AuthService {
         'userHref': ''
       }
       this.user = user;
-      this.storage.set('user', user).then(() =>
-        this.checkAccount(response.user)
-      );
+      this.checkAccount(response.user)
     }
   }).catch(error => console.log(error));
 
@@ -90,7 +88,12 @@ export class AuthService {
     this.api.findByEmail(user.email).subscribe(searchResult => {
       console.log(searchResult);
       let userData = <any>searchResult;
-      this.user.userHref = userData._links.self.href;
+      this.user = {
+        ...this.user,
+        userHref: userData._links.self.href,
+        id: userData.id
+      }
+      this.storage.set('user', this.user);
       this.storage.set('userHref', userData._links.self.href);
       this.router.navigateByUrl('/home');
     },

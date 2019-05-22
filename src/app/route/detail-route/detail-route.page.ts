@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-detail-route',
@@ -30,7 +31,8 @@ export class DetailRoutePage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private api: ApiService,
     private formBuilder: FormBuilder,
-    private router: Router) {
+    private router: Router,
+    private auth: AuthService) {
     this.url = window.location.pathname;
   }
 
