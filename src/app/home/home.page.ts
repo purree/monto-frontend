@@ -121,6 +121,12 @@ export class HomePage {
     });
   }
 
+  locateMe() {
+    if (this.userMarker){
+      this.map.panTo(this.userMarker.getPosition());
+    }
+  }
+
   createUserMarker(userPosition) {
     let icon = {
       path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0',
