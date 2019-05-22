@@ -70,7 +70,6 @@ export class HomePage {
   }
 
   loadMap() {
-    //let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
     let latLng = new google.maps.LatLng(59.3251467, 18.0679113);
     let mapOptions = {
       center: latLng,
@@ -97,13 +96,10 @@ export class HomePage {
           this.onSelect(attraction);
         });
       });
-      if (this.userSpots) {
-        this.renderUserSpots();
-      }
     });
+    this.renderUserSpots();
     this.geolocation.getCurrentPosition().then((resp) => {
       let currentPosition = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      console.log(currentPosition);
       this.createUserMarker(currentPosition);
     }).catch((error) => {
       console.log('Error getting location', error);
@@ -111,14 +107,18 @@ export class HomePage {
   }
 
   renderUserSpots() {
-    this.userSpots.forEach(spot => {
-      spot.position = new google.maps.LatLng(spot.position.latitude, spot.position.longitude);
-      let marker = this.createMarker(spot.position, 'yellow');
-      marker.addListener('click', () => {
-        this.map.panTo(marker.getPosition());
-        this.showUserSpotPopup(spot);
+    if (this.userSpots) {
+      this.userSpots.forEach(spot => {
+        if (spot.position.latitude) {
+          spot.position = new google.maps.LatLng(spot.position.latitude, spot.position.longitude);
+        }
+        let marker = this.createMarker(spot.position, 'yellow');
+        marker.addListener('click', () => {
+          this.map.panTo(marker.getPosition());
+          this.showUserSpotPopup(spot);
+        });
       });
-    });
+    }
   }
 
   locateMe() {
@@ -128,6 +128,9 @@ export class HomePage {
   }
 
   createUserMarker(userPosition) {
+    if (this.userMarker) {
+      return;
+    }
     let icon = {
       path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0',
       fillColor: '#4A90E2',
@@ -146,7 +149,6 @@ export class HomePage {
     });
     let watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
-      console.log('Updated user position');
       let updatedPosition = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
       this.userMarker.setPosition(updatedPosition);
       if (this.activeRoute && this.activeRoute.attractions) {
@@ -194,8 +196,7 @@ export class HomePage {
     this.createUserMarker(this.userMarker.position);
     this.markers.forEach(marker => marker.marker.setMap(null));
     this.markers = [];
-    let activeRouteStatues = this.activeRoute.attractions.filter(attr => attr.category.id = 1);
-
+    let activeRouteStatues = this.activeRoute.attractions.filter(attr => attr.category.id == 1);
     this.markers = activeRouteStatues.map(attraction => {
       attraction.position = this.attractions.find(x => x.id == attraction.id).position;
       let marker = this.createMarker(attraction.position, 'green');
@@ -205,7 +206,7 @@ export class HomePage {
       });
       return { id: attraction.id, marker };
     });
-
+    this.renderUserSpots();
     this.directionsService = new google.maps.DirectionsService;
     this.directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
     this.directionsDisplay.setMap(this.map);
