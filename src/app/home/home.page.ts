@@ -122,7 +122,7 @@ export class HomePage {
   }
 
   locateMe() {
-    if (this.userMarker){
+    if (this.userMarker) {
       this.map.panTo(this.userMarker.getPosition());
     }
   }
@@ -301,6 +301,7 @@ export class HomePage {
       this.activeRoute.attractions.push(this.selectedAttraction);
       this.selectedAttraction.inRoute = true;
       this.markers.find(marker => marker.id == this.selectedAttraction.id).marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+      this.selectedAttraction = null;
     });
   }
 
@@ -311,6 +312,7 @@ export class HomePage {
         this.selectedAttraction.inRoute = false;
         this.markers.find(marker => marker.id == this.selectedAttraction.id).marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
       }
+      this.selectedAttraction = null;
     });
   }
 
