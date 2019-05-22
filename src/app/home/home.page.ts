@@ -144,9 +144,6 @@ export class HomePage {
       map: this.map,
       icon,
     });
-    this.userMarker.addListener('click', () => {
-      this.arrivedAtAttraction(this.activeRoute.attractions[0]);
-    });
     let watch = this.geolocation.watchPosition();
     watch.subscribe((data) => {
       console.log('Updated user position');
