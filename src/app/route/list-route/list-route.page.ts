@@ -23,7 +23,7 @@ export class ListRoutePage implements OnInit {
           let activeRouteResonse = <any>data;
           this.myActiveRouteId = activeRouteResonse.id;
         }
-        this.getDefualtRoutes();
+        (this.segment == 'All') ? this.getDefualtRoutes() : this.getMyRoutes();
       }, error => {
         // A 404 on from the api means no user with that email exists
         console.log('No activeRoute set!');

@@ -71,3 +71,7 @@ ion-toolbar {
   --background: transparent;
   --border-style:none;
 }
+
+.header-md::after {
+  background-image: none;
+}

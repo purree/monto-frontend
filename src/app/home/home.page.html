@@ -3,6 +3,9 @@
     <ion-buttons color="black" slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-buttons (click)="locateMe()" slot="end">
+        <ion-icon size="large" name="locate"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -13,7 +16,7 @@
       <ion-grid class="full-width-grid">
         <ion-row>
           <ion-col>
-            <div *ngIf="userMarker">
+            <div *ngIf="userMarker; else noLocation">
               <ion-button *ngIf="!isTempRoute; else createRoute" (click)="startRoute()" class="map-float-btn ion-margin-horizontal" expand="block">
                 Start route
               </ion-button>
@@ -23,6 +26,12 @@
                 </ion-button>
               </ng-template>
             </div>
+            <ng-template #noLocation>
+                <ion-button disabled class="map-float-btn ion-margin-horizontal" expand="block">
+                  Retrieving your position
+                  <ion-spinner size="small" name="crescent"></ion-spinner>
+                  </ion-button>
+            </ng-template>
           </ion-col>
         </ion-row>
       </ion-grid>

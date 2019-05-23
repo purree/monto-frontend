@@ -18,6 +18,7 @@ export class DetailRoutePage implements OnInit {
   isActive: boolean;
   myActiveRouteId: any;
   showReviews: boolean = false;
+  showAreYouSure: boolean = false;
   route: any;
   text: string;
   url: string;
@@ -79,6 +80,14 @@ export class DetailRoutePage implements OnInit {
     });
   }
 
+  initDelete(){
+    this.showAreYouSure = true;
+  }
+
+  closeAreYouSure() {
+    this.showAreYouSure = false;
+  }
+
   deleteRoute() {
     this.api.deleteRoute(this.route.id).subscribe(x => console.log);
     this.router.navigateByUrl('/list-route');
@@ -88,6 +97,7 @@ export class DetailRoutePage implements OnInit {
     this.api.getUser().then(userHref => {
       this.api.setMyActiveRoute(userHref, this.route.id).subscribe(data => {
         this.isActive = true;
+        this.router.navigateByUrl('/home');
       });
     });
   }

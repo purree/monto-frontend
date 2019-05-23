@@ -36,11 +36,6 @@ export class AppComponent {
       title: 'Profile',
       url: '/profile',
       icon: 'contact'
-    },
-    {
-      title: 'Settings',
-      url: '/settings',
-      icon: 'settings'
     }
   ];
 

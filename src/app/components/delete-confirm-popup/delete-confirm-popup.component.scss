@@ -1,0 +1,26 @@
+.floating-card {
+    display: block;
+    position: absolute;
+    width: 80vw;
+    top: 20vh;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: white;
+    z-index: 1000;
+  }
+
+
+.card-close-icon {
+    font-size: 24px;
+    position: relative;
+    left: 90%;
+  }
+
+  ion-card-content {
+    padding-top: 0;
+  }
+
+  ion-buttons {
+    justify-content: space-evenly;
+  }

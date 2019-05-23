@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
+import { DeleteConfirmPopupComponent } from '../../components/delete-confirm-popup/delete-confirm-popup.component';
 
 import { DetailRoutePage } from './detail-route.page';
 
@@ -22,6 +23,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DetailRoutePage]
+  declarations: [DetailRoutePage, DeleteConfirmPopupComponent]
 })
 export class DetailRoutePageModule {}
