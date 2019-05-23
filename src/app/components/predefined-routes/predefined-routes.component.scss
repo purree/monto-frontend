@@ -1,0 +1,42 @@
+.routes-row {
+    display: flex;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    z-index: 100;
+    height: 100px;
+}
+
+.route-container {
+    flex: 0 0 17vh;
+    display: flex;
+    align-items: center;
+    margin-top: 0;
+    margin-left: 0;
+    box-shadow: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+ion-col {
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+ion-row {
+    width: 15vh;
+    justify-content: center
+}
+
+ion-card-subtitle {
+    text-align: center;
+    width: 15vh;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.sc-ion-card-ios-h {
+    margin-bottom: 0;
+}

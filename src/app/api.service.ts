@@ -89,12 +89,20 @@ export class ApiService {
     return this.http.get(`${apiUrl}/attractions/search/findByTitleIgnoreCaseContainingAndCategory_Name?title=${searchTerm}&category=statue`);
   }
 
+  getRoutesByUser(userId) {
+    return this.http.get<any>(`${apiUrl}/users/${userId}/routes`);
+  }
+
   getMyRoutes(userHref) {
     return this.http.get(`${userHref}/routes`);
   }
 
   getRouteWithMeta(routeId) {
     return this.http.get(`${apiUrl}/routes-with-meta/${routeId}`);
+  }
+
+  getRoutesWithMeta() {
+    return this.http.get(`${apiUrl}/routes-with-meta/`);
   }
 
   getMyActiveRoute(userHref) {
@@ -233,12 +241,6 @@ export class ApiService {
         'Content-Type': 'application/json'
       })
     };
-    let rb = {
-      "rating": 4,
-      "comment": "Nice route!",
-      "route": "http://localhost:8080/routes/12",
-      "ratingCreator": "http://localhost:8080/users/6"
-    }
     let reviewBody = {
       ...reviewData,
       "route": `${apiUrl}/routes/${routeId}`,

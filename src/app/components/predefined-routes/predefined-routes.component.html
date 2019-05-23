@@ -1,0 +1,18 @@
+<div>
+  <div class="routes-row">
+    <ion-card class="route-container" *ngFor="let route of routes" (click)="onRouteSelect(route)">
+      <ion-col>
+        <ion-row>
+          <ion-avatar>
+            <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+          </ion-avatar>
+        </ion-row>
+        <ion-row>
+          <ion-card-subtitle [ngStyle]="{'font-weight': route.id == activeRoute?.id ? 'bold' : 'normal' }">
+            {{ route.routeName }}
+          </ion-card-subtitle>
+        </ion-row>
+      </ion-col>
+    </ion-card>
+  </div>
+</div>

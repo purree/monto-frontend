@@ -3,21 +3,27 @@
     <ion-buttons color="black" slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-buttons (click)="locateMe()" slot="end">
-        <ion-icon size="large" name="locate"></ion-icon>
+    <ion-title>{{ activeRoute?.routeName }}</ion-title>
+    <ion-buttons *ngIf="routeStarted" slot="end">
+      <ion-button (click)="endRoute()" fill="solid" color="danger">
+        End
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <app-predefined-routes *ngIf="!routeStarted" [activeRoute]="activeRoute"
+    (selectRoute)="selectPredefinedRoute($event)"></app-predefined-routes>
   <div class="map-wrapper">
-    <div #map id="map"></div>
+    <div #map [ngClass]="{'map-route-started': routeStarted == true}" id="map"></div>
     <div *ngIf="activeRoute && activeRoute?.attractions?.length > 0 && !routeStarted">
       <ion-grid class="full-width-grid">
         <ion-row>
           <ion-col>
             <div *ngIf="userMarker; else noLocation">
-              <ion-button *ngIf="!isTempRoute; else createRoute" (click)="startRoute()" class="map-float-btn ion-margin-horizontal" expand="block">
+              <ion-button *ngIf="!isTempRoute; else createRoute" (click)="startRoute()"
+                class="map-float-btn ion-margin-horizontal" expand="block">
                 Start route
               </ion-button>
               <ng-template #createRoute>
@@ -27,16 +33,21 @@
               </ng-template>
             </div>
             <ng-template #noLocation>
-                <ion-button disabled class="map-float-btn ion-margin-horizontal" expand="block">
-                  Retrieving your position
-                  <ion-spinner size="small" name="crescent"></ion-spinner>
-                  </ion-button>
+              <ion-button disabled class="map-float-btn ion-margin-horizontal" expand="block">
+                Retrieving your position
+                <ion-spinner size="small" name="crescent"></ion-spinner>
+              </ion-button>
             </ng-template>
           </ion-col>
         </ion-row>
       </ion-grid>
     </div>
   </div>
+  <ion-fab class="locateMe" vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="locateMe()">
+        <ion-icon name="locate"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   <ion-fab *ngIf="routeStarted" vertical="bottom" horizontal="end">
     <ion-fab-button (click)="popupForUserSpot = true">
       <ion-icon name="add"></ion-icon>
@@ -44,7 +55,8 @@
   </ion-fab>
 </ion-content>
 
-<app-start-new-route *ngIf="showStartNewRoute" (startRoute)="startRoute()" (close)="closePopups($event)" [activeRoute]="activeRoute">
+<app-start-new-route *ngIf="showStartNewRoute" (startRoute)="startRoute()" (close)="closePopups($event)"
+  [activeRoute]="activeRoute">
 </app-start-new-route>
 <app-show-userspot *ngIf="selectedUserSpot" (close)="closePopups($event)" [userSpot]="selectedUserSpot">
 </app-show-userspot>
