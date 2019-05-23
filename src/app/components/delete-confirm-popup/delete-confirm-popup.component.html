@@ -1,0 +1,14 @@
+<ion-card class="floating-card">
+    <ion-card-header>
+      <ion-icon class="card-close-icon ion-text-right" (click)="closePopup()" name="close"></ion-icon>
+    </ion-card-header>
+    <ion-card-content>
+      <p>
+        Are you sure you want to delete this?
+      </p>
+      <ion-buttons>
+        <ion-button slot="start" (click)="closePopup()">No</ion-button>
+        <ion-button slot="end" (click)="onDelete()">Yes</ion-button>
+      </ion-buttons>
+      </ion-card-content>
+  </ion-card>

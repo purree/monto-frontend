@@ -18,6 +18,7 @@ export class DetailRoutePage implements OnInit {
   isActive: boolean;
   myActiveRouteId: any;
   showReviews: boolean = false;
+  showAreYouSure: boolean = false;
   route: any;
   text: string;
   url: string;
@@ -77,6 +78,14 @@ export class DetailRoutePage implements OnInit {
         }, error => console.log(error));
       });
     });
+  }
+
+  initDelete(){
+    this.showAreYouSure = true;
+  }
+
+  closeAreYouSure() {
+    this.showAreYouSure = false;
   }
 
   deleteRoute() {
