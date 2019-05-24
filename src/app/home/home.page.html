@@ -21,7 +21,7 @@
       <ion-grid class="full-width-grid">
         <ion-row>
           <ion-col>
-            <div *ngIf="userMarker; else noLocation">
+            <div *ngIf="mapService.userMarker; else noLocation">
               <ion-button *ngIf="!isTempRoute; else createRoute" (click)="startRoute()"
                 class="map-float-btn ion-margin-horizontal" expand="block">
                 Start route
@@ -60,7 +60,7 @@
 </app-start-new-route>
 <app-show-userspot *ngIf="selectedUserSpot" (close)="closePopups($event)" [userSpot]="selectedUserSpot">
 </app-show-userspot>
-<app-create-userspot *ngIf="popupForUserSpot" [activeRoute]="activeRoute" [userPosition]="userMarker"
+<app-create-userspot *ngIf="popupForUserSpot" [activeRoute]="activeRoute" [userPosition]="mapService.userMarker"
   (close)="closePopups($event)" (userSpotCreated)="userSpotCreated($event)"></app-create-userspot>
 <app-attraction-popup *ngIf="currentAttraction" (close)="closePopups($event)" [attraction]="currentAttraction">
 </app-attraction-popup>
