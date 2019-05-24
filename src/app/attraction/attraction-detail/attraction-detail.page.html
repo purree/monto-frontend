@@ -8,12 +8,15 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <ion-content padding>
-  <ion-card>
-    <div class="map-wrapper">
-      <div #map id="map"></div>
+  <ion-card >
+    <div *ngIf="attraction?.picture">
+      <img [src]="attraction?.picture">
     </div>
+      <div class="map-wrapper"
+      [ngStyle]="{'display': attraction?.picture ? 'none' : 'block' }">
+        <div #map id="map"></div>
+      </div>
   </ion-card>
   <ion-list-header>{{ attraction?.position.latitude }}, {{ attraction?.position?.longitude }}</ion-list-header>
   <h2>{{ attraction?.titleEnglish }}</h2>
