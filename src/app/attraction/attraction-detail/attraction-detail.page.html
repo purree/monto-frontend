@@ -11,7 +11,7 @@
 <ion-content padding>
   <ion-card >
     <div *ngIf="attraction?.picture">
-      <img [src]="attraction?.picture">
+      <img [src]="assetsPath + attraction?.picture">
     </div>
       <div class="map-wrapper"
       [ngStyle]="{'display': attraction?.picture ? 'none' : 'block' }">
