@@ -23,16 +23,16 @@ export class ListRoutePage implements OnInit {
           let activeRouteResonse = <any>data;
           this.myActiveRouteId = activeRouteResonse.id;
         }
-        (this.segment == 'All') ? this.getDefualtRoutes() : this.getMyRoutes();
+        console.log(this.segment);
       }, error => {
         // A 404 on from the api means no user with that email exists
         console.log('No activeRoute set!');
         console.log(error);
         this.myActiveRouteId = null;
-        this.getDefualtRoutes();
       }
       );
     });
+    (this.segment == 'All') ? this.getDefualtRoutes() : this.getMyRoutes();
   }
 
   ngOnInit() {
@@ -40,8 +40,7 @@ export class ListRoutePage implements OnInit {
 
   getDefualtRoutes() {
     this.api.getRoutes().subscribe(data => {
-      let routesResponse = <any>data;
-      this.routes = routesResponse._embedded.routes;
+      this.routes = <any>data;
       console.log(this.routes);
     });
   }
@@ -68,7 +67,7 @@ export class ListRoutePage implements OnInit {
 
   segmentChanged($event) {
     this.segment = $event.target.value;
-    if (this.segment == 'My') {
+    if (this.segment === 'My') {
       this.getMyRoutes();
     } else {
       this.getDefualtRoutes();
