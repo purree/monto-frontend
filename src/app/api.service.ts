@@ -82,7 +82,7 @@ export class ApiService {
   }
 
   getAttractions() {
-    return this.http.get(`${apiUrl}/attractions-with-meta?size=40`);
+    return this.http.get<any>(`${apiUrl}/attractions-with-meta?size=40`);
   }
 
   findAttractionsByTitle(searchTerm: String) {
