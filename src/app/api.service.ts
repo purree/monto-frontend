@@ -132,7 +132,7 @@ export class ApiService {
   }
 
   getRoutes() {
-    return this.http.get(`${apiUrl}/routes`);
+    return this.http.get(`${apiUrl}/routes-with-meta/public-routes`);
   }
 
   getRoute(id: any) {

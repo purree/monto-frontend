@@ -45,8 +45,9 @@ export class DetailRoutePage implements OnInit {
       let routeData = {
         "routeName": this.routeForm.value.name,
         "description": this.routeForm.value.description,
-        "public": this.routeForm.value.public
+        "routeIsPublic": this.routeForm.value.public
       }
+      console.log(routeData);
       this.api.patchRoute(this.route.id, routeData).subscribe(data => console.log(data));
     }
   }
@@ -63,7 +64,7 @@ export class DetailRoutePage implements OnInit {
             this.routeForm = this.formBuilder.group({
               name: [this.route.routeName, Validators.required],
               description: [this.route.description],
-              public: this.route.public
+              public: this.route.routeIsPublic
             });
           }
         });

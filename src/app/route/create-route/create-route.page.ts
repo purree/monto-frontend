@@ -36,7 +36,7 @@ export class CreateRoutePage implements OnInit {
       let routeData = {
         "routeName": this.routeForm.value.name,
         "description": this.routeForm.value.description,
-        "public": this.routeForm.value.public,
+        "routeIsPublic": this.routeForm.value.public,
         "routeCreator": userHref
       }
       'http://localhost:8080/routes/12/ratings'
