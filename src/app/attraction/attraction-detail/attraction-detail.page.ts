@@ -28,7 +28,8 @@ export class AttractionDetailPage implements OnInit {
     this.api.getAttraction(attractionId).subscribe(data => {
       this.attraction = data;
       console.log(this.attraction);
-      this.loadMap();
+      if(!this.attraction.picture) {
+      this.loadMap(); }
       this.api.getUser().then(userHref => {
         this.api.getMyActiveRoute(userHref).subscribe(data => {
           this.activeRoute = data;
@@ -59,7 +60,7 @@ export class AttractionDetailPage implements OnInit {
     this.api.removeAttractionFromRoute(this.activeRoute.id, attractionId).subscribe(data => {
       if (!data) {
         this.activeRoute.attractions = this.activeRoute.attractions.filter(x => x.id !== attractionId);
-        //this.activeRoute._embedded.attractions = this.activeRoute._embedded.attractions.filter(x => x.id !== attractionId);
+        // this.activeRoute._embedded.attractions = this.activeRoute._embedded.attractions.filter(x => x.id !== attractionId);
         this.inActiveRoute = false;
       }
     });
