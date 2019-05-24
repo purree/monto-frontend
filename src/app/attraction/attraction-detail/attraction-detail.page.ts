@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../api.service';
+import { assetsPath } from '../../../environments/environment';
 
 declare var google;
 
@@ -10,7 +11,7 @@ declare var google;
   styleUrls: ['./attraction-detail.page.scss'],
 })
 export class AttractionDetailPage implements OnInit {
-
+  assetsPath: string;
   @ViewChild('map') mapElement: ElementRef;
   map: any;
   attraction: any;
@@ -18,7 +19,7 @@ export class AttractionDetailPage implements OnInit {
   inActiveRoute: boolean = true;
   showFunFact: boolean = false;
 
-  constructor(private route: ActivatedRoute, private api: ApiService) { }
+  constructor(private route: ActivatedRoute, private api: ApiService) {this.assetsPath = assetsPath; }
 
   ngOnInit() {
   }

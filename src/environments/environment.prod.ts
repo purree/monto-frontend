@@ -12,3 +12,4 @@ export const environment = {
 };
 
 export const apiUrl = 'https://pvt.dsv.su.se/Group77777';
+export const assetsPath = '/monto-frontend';
