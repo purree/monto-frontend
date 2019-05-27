@@ -85,6 +85,10 @@ export class ApiService {
     return this.http.get<any>(`${apiUrl}/attractions-with-meta?size=40`);
   }
 
+  deleteSpot(id) {
+    return this.http.delete(`${apiUrl}/attractions/${id}`);
+  }
+
   findAttractionsByTitle(searchTerm: String) {
     return this.http.get(`${apiUrl}/attractions/search/findByTitleIgnoreCaseContainingAndCategory_Name?title=${searchTerm}&category=statue`);
   }
@@ -246,7 +250,6 @@ export class ApiService {
       "route": `${apiUrl}/routes/${routeId}`,
       "ratingCreator": userHref
     }
-    console.log(reviewBody);
     return this.http.post(`${apiUrl}/ratings`, reviewBody, httpOptions);
   }
 

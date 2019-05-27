@@ -1,10 +1,10 @@
 <ion-card class="map-card" padding>
-  <ion-icon class="card-close-icon ion-text-right" (click)="closeUserSpotPopup()" name="close"></ion-icon>
+  <ion-icon class="card-close-icon ion-text-right" (click)="closeFactPopup()" name="close"></ion-icon>
   <ion-card-title>
-    {{userSpot.titleEnglish}}
+    {{fact.title}}
   </ion-card-title>
   <p>
-    {{userSpot.description }}
+    {{fact.description }}
   </p>
   <ion-buttons>
     <ion-button (click)="handleDelete()" slot="end">

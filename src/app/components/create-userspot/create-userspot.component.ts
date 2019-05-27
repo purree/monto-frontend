@@ -26,6 +26,7 @@ export class CreateUserspotComponent implements OnInit {
     { name: "Vista", defaultDescription: "The view from this spot is amazing!" },
     { name: "Bar", defaultDescription: "Cheap beers and fast service" },
     { name: "Resturant", defaultDescription: "The foie gras here is to die for" },
+    { name: "Fact", defaultDescription: "Add a fact about this location!" },
     { name: "Other", defaultDescription: "Sweet spot" }
   ];
 
@@ -47,11 +48,12 @@ export class CreateUserspotComponent implements OnInit {
   }
 
   saveSpot() {
+    const category = (this.category === 'Fact') ? 3 : 2;
     let spotData = {
       'title': this.category,
       'titleEnglish': this.category,
       'description': this.description,
-      'category': `${apiUrl}/categories/2`
+      'category': `${apiUrl}/categories/${category}`
     };
     this.api.saveUserSpot(spotData).subscribe(spotResponse => {
       let spotData = <any>spotResponse;
@@ -62,9 +64,9 @@ export class CreateUserspotComponent implements OnInit {
       this.api.addPosition(positionPostData).subscribe(posResponse => {
         let positionData = <any>posResponse;
         this.api.addPositionToAttraction(spotData.id, positionData.id).subscribe(posAttractionResponse => console.log(posAttractionResponse));
-        this.api.addAttractionToRoute(this.activeRoute.id, spotData.id).subscribe(attractionRouteResponse => {console.log(attractionRouteResponse);});
+        this.api.addAttractionToRoute(this.activeRoute.id, spotData.id).subscribe(attractionRouteResponse => { console.log(attractionRouteResponse); });
         this.userSpotCreated.emit({
-          ...spotData, 'position': positionPostData
+          ...spotData, 'position': positionPostData, 'category': { 'id': category }
         });
       });
     });

@@ -55,10 +55,12 @@
   </ion-fab>
 </ion-content>
 
+<app-fact-packet-toast></app-fact-packet-toast>
+<app-fact-packet-popup *ngIf="selectedFactPacket" [fact]="selectedFactPacket" (close)="closePopups($event)" (delete)="deleteSpot($event)"></app-fact-packet-popup>
 <app-start-new-route *ngIf="showStartNewRoute" (startRoute)="startRoute()" (close)="closePopups($event)"
   [activeRoute]="activeRoute">
 </app-start-new-route>
-<app-show-userspot *ngIf="selectedUserSpot" (close)="closePopups($event)" [userSpot]="selectedUserSpot">
+<app-show-userspot *ngIf="selectedUserSpot" (close)="closePopups($event)" [userSpot]="selectedUserSpot" (delete)="deleteSpot($event)">
 </app-show-userspot>
 <app-create-userspot *ngIf="popupForUserSpot" [activeRoute]="activeRoute" [userPosition]="mapService.userMarker"
   (close)="closePopups($event)" (userSpotCreated)="userSpotCreated($event)"></app-create-userspot>
