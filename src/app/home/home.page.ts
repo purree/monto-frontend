@@ -27,6 +27,8 @@ export class HomePage {
   selectedUserSpot: any;
   selectedFactPacket: any;
 
+  isRouteCreator: boolean = false;
+
   userHref: string;
   userPositionWatcher: Observable<Geoposition>;
 
@@ -68,6 +70,8 @@ export class HomePage {
     this.activeRoute = await this.api.getMyActiveRoute(this.userHref).toPromise().catch(error => console.log(error));
     if (this.activeRoute) {
       this.activeRoute = await this.api.getRouteWithMeta(this.activeRoute.id).toPromise();
+      this.api.getRouteCreator(this.activeRoute.id).subscribe(c => this.isRouteCreator = (c._links.self.href === this.userHref));
+      console.log(this.activeRoute);
       this.activeRoute.attractions.forEach(attraction => {
         attraction.gposition = new google.maps.LatLng(attraction.position.latitude, attraction.position.longitude);
       });
@@ -151,7 +155,8 @@ export class HomePage {
   }
 
   handleUserMove(position: Geoposition): void {
-    console.log('updated pos!')
+    console.log('updated pos!');
+    console.log(this.isRouteCreator);
     const userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     this.mapService.userMarker.setPosition(userPosition);
     if (this.activeRoute && this.routeStarted) {
