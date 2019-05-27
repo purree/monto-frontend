@@ -152,7 +152,7 @@ export class ApiService {
   }
 
   getRouteCreator(routeId: any) {
-    return this.http.get(`${apiUrl}/routes/${routeId}/routeCreator`);
+    return this.http.get<any>(`${apiUrl}/routes/${routeId}/routeCreator`);
   }
 
   getRouteAttractions(route: any) {

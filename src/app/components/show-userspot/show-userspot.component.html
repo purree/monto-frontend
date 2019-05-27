@@ -6,7 +6,7 @@
   <p>
     {{userSpot.description }}
   </p>
-  <ion-buttons>
+  <ion-buttons *ngIf="isRouteCreator">
     <ion-button (click)="handleDelete()" slot="end">
       <ion-icon name="trash"></ion-icon>
     </ion-button>

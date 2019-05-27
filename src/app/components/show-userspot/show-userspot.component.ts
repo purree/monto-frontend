@@ -10,6 +10,7 @@ export class ShowUserspotComponent implements OnInit {
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
   @Output() delete: EventEmitter<any> = new EventEmitter<any>();
   @Input() userSpot: any;
+  @Input() isRouteCreator: boolean;
 
   constructor() { }
 

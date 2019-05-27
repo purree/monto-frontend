@@ -10,6 +10,7 @@ export class FactPacketPopupComponent implements OnInit {
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
   @Output() delete: EventEmitter<any> = new EventEmitter<any>();
   @Input() fact: any;
+  @Input() isRouteCreator: boolean;
 
   constructor() { }
 
