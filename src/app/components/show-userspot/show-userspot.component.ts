@@ -8,14 +8,19 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class ShowUserspotComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
+  @Output() delete: EventEmitter<any> = new EventEmitter<any>();
   @Input() userSpot: any;
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   closeUserSpotPopup() {
     this.close.emit();
+  }
+
+  handleDelete() {
+    this.delete.emit({ spot: this.userSpot, categoryId: 2 });
   }
 
 }

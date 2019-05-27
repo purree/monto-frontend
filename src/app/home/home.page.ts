@@ -46,6 +46,7 @@ export class HomePage {
 
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
+    // TODO: dont refresh all
     this.fetchActiveRoute().then(() => this.loadMarkers(true));
     if (this.mapService.userMarker) {
       this.mapService.userMarker.setMap(this.mapService.map);
@@ -56,6 +57,7 @@ export class HomePage {
     this.mapService.loadMap(this.mapElement.nativeElement);
     this.geolocation.getCurrentPosition().then((resp) => {
       this.mapService.createUserMarker(new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude));
+      // reattatch position watcher in IonWillEnter
       this.userPositionWatcher = this.geolocation.watchPosition();
       this.userPositionWatcher.subscribe((pos: Geoposition) => this.handleUserMove(pos));
     }).catch(error => console.log('Error getting location', error));
@@ -93,7 +95,7 @@ export class HomePage {
       this.api.unsetMyActiveRoute(this.userHref).subscribe(() => this.endRoute());
       return;
     }
-    this.api.setMyActiveRoute(this.userHref, route.id).subscribe(data => {
+    this.api.setMyActiveRoute(this.userHref, route.id).subscribe(() => {
       this.fetchActiveRoute().then(() => {
         this.loadMarkers(false);
         this.mapService.displayRoute(this.mapService.userMarker.position, this.activeRoute.attractions.filter(a => a.category.id !== 3));
@@ -125,7 +127,7 @@ export class HomePage {
           this.mapService.map.panTo(marker.getPosition());
           this.showUserSpotPopup(spot);
         });
-        return marker;
+        return { id: spot.id, marker };
       });
       this.mapService.setUserSpots(userSpotMarkers);
     }
@@ -227,7 +229,7 @@ export class HomePage {
       this.mapService.map.panTo(marker.getPosition());
       this.showUserSpotPopup(userSpot);
     });
-    this.mapService.userSpotMarkers.push(marker);
+    this.mapService.userSpotMarkers.push({ id: userSpot.id, marker });
   }
 
   closePopups() {
@@ -257,6 +259,15 @@ export class HomePage {
 
   unselectAttraction(): void {
     this.selectedAttraction = null;
+  }
+
+  // attractionId is id of fact/spot
+  deleteSpot(deleteObj) {
+    this.api.removeAttractionFromRoute(this.activeRoute.id, deleteObj.spot.id).subscribe(() => {
+      this.api.deleteSpot(deleteObj.spot.id);
+      this.mapService.removeSpot(deleteObj.spot, deleteObj.categoryId);
+      this.closePopups();
+    });
   }
 
   addAttractionToRoute() {

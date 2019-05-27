@@ -26,6 +26,16 @@ export class MapService {
     this.markers = markers;
   }
 
+  removeSpot(spot, categoryId) { 
+    if (categoryId == 2) {
+      this.userSpotMarkers.find(m => m.id = spot.id).marker.setMap(null);
+      this.userSpotMarkers = this.userSpotMarkers.filter(m => m.id !== spot.id)
+    } else if (categoryId == 3) {
+      this.factSpotMarkers.find(m => m.id = spot.id).marker.setMap(null);
+      this.factSpotMarkers =  this.factSpotMarkers.filter(m => m.id !== spot.id)
+    }
+  }
+
   clearMarkers() {
     if (this.markers) {
       this.markers.forEach(m => m.marker.setMap(null));
@@ -35,7 +45,7 @@ export class MapService {
 
   clearUserSpots() {
     if (this.userSpotMarkers) {
-      this.userSpotMarkers.forEach(m => m.setMap(null));
+      this.userSpotMarkers.forEach(m => m.marker.setMap(null));
       this.userSpotMarkers = [];
     }
   }

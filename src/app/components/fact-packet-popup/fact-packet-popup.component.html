@@ -6,4 +6,9 @@
   <p>
     {{fact.description }}
   </p>
+  <ion-buttons>
+    <ion-button (click)="handleDelete()" slot="end">
+      <ion-icon name="trash"></ion-icon>
+    </ion-button>
+  </ion-buttons>
 </ion-card>
