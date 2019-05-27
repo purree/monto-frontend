@@ -2,9 +2,10 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ApiService } from '../api.service';
 import { MapService } from '../services/map/map.service';
 
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
-import { MenuController } from '@ionic/angular';
+import { MenuController, Events } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 declare var google;
 
@@ -22,10 +23,11 @@ export class HomePage {
   currentAttraction: any; // this is the attraction you arrive at
   routeStarted: boolean = false;
   popupForUserSpot: boolean = false;
-  userSpots: any;
+  factSpots: any;
   selectedUserSpot: any;
 
   userHref: string;
+  userPositionWatcher: Observable<Geoposition>;
 
   defaultAttractions: any;
 
@@ -37,22 +39,25 @@ export class HomePage {
     private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder,
     private menuCtrl: MenuController,
-    private mapService: MapService
+    private mapService: MapService,
+    private ev: Events
   ) { }
 
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
+    this.fetchActiveRoute().then(() => this.loadMarkers(true));
+    if (this.mapService.userMarker) {
+      this.mapService.userMarker.setMap(this.mapService.map);
+    }
   }
 
   ngOnInit() {
     this.mapService.loadMap(this.mapElement.nativeElement);
-    this.fetchActiveRoute().then(() => this.loadMarkers());
     this.geolocation.getCurrentPosition().then((resp) => {
-      let currentPosition = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      this.createUserMarker(currentPosition);
-    }).catch((error) => {
-      console.log('Error getting location', error);
-    });
+      this.mapService.createUserMarker(new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude));
+      this.userPositionWatcher = this.geolocation.watchPosition();
+      this.userPositionWatcher.subscribe((pos: Geoposition) => this.handleUserMove(pos));
+    }).catch(error => console.log('Error getting location', error));
   }
 
   async fetchActiveRoute() {
@@ -63,16 +68,36 @@ export class HomePage {
       this.activeRoute.attractions.forEach(attraction => {
         attraction.gposition = new google.maps.LatLng(attraction.position.latitude, attraction.position.longitude);
       });
-      this.userSpots = this.activeRoute.attractions.filter(attraction => attraction.category.id == 2);
     }
   }
 
-  async loadMarkers() {
-    if (!this.defaultAttractions) {
-      this.attractions = this.defaultAttractions = await this.api.getAttractions().toPromise();
+  // loadDefault true will fetch all attractions, false will only get from active route
+  async loadMarkers(loadDefault) {
+    if (loadDefault) {
+      if (!this.defaultAttractions) {
+        this.attractions = this.defaultAttractions = await this.api.getAttractions().toPromise();
+      }
+      this.renderMarkers(this.defaultAttractions);
+    } else {
+      this.renderMarkers(this.activeRoute.attractions.filter(a => a.category.id == 1));
     }
-    this.renderMarkers(this.defaultAttractions);
-    this.renderUserSpots();
+    if (this.activeRoute) {
+      this.renderUserSpots(this.activeRoute.attractions.filter(a => a.category.id == 2));
+      this.renderFactSpots(this.activeRoute.attractions.filter(a => a.category.id == 3));
+    }
+  }
+
+  selectPredefinedRoute(route) {
+    if (this.activeRoute && route.id == this.activeRoute.id) {
+      this.api.unsetMyActiveRoute(this.userHref).subscribe(() => this.endRoute());
+      return;
+    }
+    this.api.setMyActiveRoute(this.userHref, route.id).subscribe(data => {
+      this.fetchActiveRoute().then(() => {
+        this.loadMarkers(false);
+        this.mapService.displayRoute(this.mapService.userMarker.position, this.activeRoute.attractions.filter(a => a.category.id !== 3));
+      });
+    });
   }
 
   renderMarkers(attractions) {
@@ -91,12 +116,10 @@ export class HomePage {
     this.mapService.setMarkers(markers);
   }
 
-  renderUserSpots() {
-    if (this.userSpots) {
-      let userSpotMarkers = this.userSpots.map(spot => {
-        if (spot.position.latitude) {
-          spot.gposition = new google.maps.LatLng(spot.position.latitude, spot.position.longitude);
-        }
+  renderUserSpots(userSpots) {
+    if (userSpots) {
+      let userSpotMarkers = userSpots.map(spot => {
+        spot.gposition = new google.maps.LatLng(spot.position.latitude, spot.position.longitude);
         let marker = this.mapService.createMarker(spot.gposition, 'yellow', () => {
           this.mapService.map.panTo(marker.getPosition());
           this.showUserSpotPopup(spot);
@@ -107,52 +130,72 @@ export class HomePage {
     }
   }
 
+  renderFactSpots(factSpots) {
+    if (factSpots) {
+      let factSpotsMarkers = factSpots.map(fact => {
+        fact.gposition = new google.maps.LatLng(fact.position.latitude, fact.position.longitude);
+        let marker = this.mapService.createFactMarker(fact.gposition);
+        return { id: fact.id, marker };
+      });
+      this.mapService.setFactSpots(factSpotsMarkers);
+    }
+  }
+
   locateMe() {
     if (this.mapService.userMarker) {
       this.mapService.map.panTo(this.mapService.userMarker.getPosition());
     }
   }
 
-  createUserMarker(userPosition) {
-    if (this.mapService.userMarker) {
-      return;
-    }
-    this.mapService.userMarker = this.mapService.createUserMarker(userPosition);
-    let watch = this.geolocation.watchPosition();
-    watch.subscribe((data) => {
-      let updatedPosition = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
-      this.mapService.userMarker.setPosition(updatedPosition);
-      if (this.activeRoute && this.routeStarted) {
-        this.activeRoute.attractions.forEach(attraction => {
-          if (attraction.category.id == 1) {
-            let distance: number = this.mapService.getDistance(updatedPosition, attraction.gposition)
-            console.log(`The distance between the user and ${attraction.title} is ${distance} meters.`);
-            if (distance <= 30 && !attraction.seen) {
-              this.arrivedAtAttraction(attraction);
-              attraction.seen = true;
-            }
+  handleUserMove(position: Geoposition): void {
+    console.log('updated pos!')
+    const userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    this.mapService.userMarker.setPosition(userPosition);
+    if (this.activeRoute && this.routeStarted) {
+      this.activeRoute.attractions
+        .filter(attraction => attraction.category.id !== 2 && !attraction.seen)
+        .forEach(attraction => {
+          let distance: number = this.mapService.getDistance(userPosition, attraction.gposition)
+          if (attraction.category.id === 1 && distance <= 30) {
+            this.arrivedAtAttraction(attraction);
+          } else if (attraction.category.id === 3 && distance <= 100) {
+            this.factInRange(attraction);
           }
         });
-      }
-    });
+    }
+  }
+
+  arrivedAtAttraction(attraction) {
+    attraction.seen = true;
+    window.navigator.vibrate(200);
+    this.currentAttraction = attraction;
+    this.api.getUser().then((user) => this.api.addToSeenAttractions(user, attraction.id).subscribe());
+  }
+
+  factInRange(fact) {
+    fact.seen = true;
+    window.navigator.vibrate(200);
+    let factMarker = this.mapService.factSpotMarkers.find(f => f.id == fact.id).marker;
+    factMarker.addListener('click', () => console.log(fact));
+    factMarker.setAnimation(google.maps.Animation.BOUNCE);
+    factMarker.setIcon({ ...factMarker.getIcon(), 'fillColor': '#FFD700' });
+    this.ev.publish('factInRange');
+    setTimeout(() => factMarker.setAnimation(null), 2000);
   }
 
   startRoute() {
-    let activeRouteStatues = this.activeRoute.attractions.filter(attr => attr.category.id == 1);
-    this.renderMarkers(activeRouteStatues);
-    this.renderUserSpots();
-    this.mapService.displayRoute(this.mapService.userMarker.position, activeRouteStatues);
+    let statuesAndUserspots = this.activeRoute.attractions.filter(attr => attr.category.id !== 3)
+    this.loadMarkers(false);
+    this.mapService.displayRoute(this.mapService.userMarker.position, statuesAndUserspots);
     this.routeStarted = true;
   }
 
   endRoute() {
-    this.resetMarkers();
-  }
-
-  resetMarkers() {
     this.routeStarted = false;
     this.mapService.clearRoute();
-    this.fetchActiveRoute().then(() => this.loadMarkers());
+    this.mapService.clearFactSpots();
+    this.mapService.clearUserSpots();
+    this.fetchActiveRoute().then(() => this.loadMarkers(true));
   }
 
   handleAddToRouteClick() {
@@ -178,12 +221,12 @@ export class HomePage {
 
   userSpotCreated(userSpot) {
     this.popupForUserSpot = null;
-    this.userSpots.push(userSpot);
     userSpot.gposition = new google.maps.LatLng(userSpot.position.latitude, userSpot.position.longitude);
     let marker = this.mapService.createMarker(userSpot.gposition, 'yellow', () => {
       this.mapService.map.panTo(marker.getPosition());
       this.showUserSpotPopup(userSpot);
     });
+    this.mapService.userSpotMarkers.push(marker);
   }
 
   closePopups() {
@@ -191,11 +234,6 @@ export class HomePage {
     this.selectedUserSpot = null;
     this.popupForUserSpot = false;
     this.showStartNewRoute = false;
-  }
-
-  arrivedAtAttraction(attraction) {
-    this.currentAttraction = attraction;
-    this.api.getUser().then((user) => this.api.addToSeenAttractions(user, attraction.id).subscribe());
   }
 
   showUserSpotPopup(spot: any) {
@@ -232,22 +270,6 @@ export class HomePage {
         this.mapService.setMarkerIcon(this.selectedAttraction.id, 'http://maps.google.com/mapfiles/ms/icons/red-dot.png');
       }
       this.selectedAttraction = null;
-    });
-  }
-
-  selectPredefinedRoute(route) {
-    if (this.activeRoute && route.id == this.activeRoute.id) {
-      this.api.unsetMyActiveRoute(this.userHref).subscribe(() => {
-        this.resetMarkers();
-      });
-      return;
-    }
-    this.api.setMyActiveRoute(this.userHref, route.id).subscribe(data => {
-      this.fetchActiveRoute().then(() => {
-        this.renderMarkers(this.activeRoute.attractions.filter(a => a.category.id == 1));
-        this.renderUserSpots();
-        this.mapService.displayRoute(this.mapService.userMarker.position, this.activeRoute.attractions);
-      });
     });
   }
 }

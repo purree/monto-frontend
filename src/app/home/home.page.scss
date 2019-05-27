@@ -68,3 +68,9 @@
 .header-md::after {
   background-image: none;
 }
+
+ion-toast.offset-top {
+  .toast-wrapper {
+    transform: translateY(55px) !important;
+  }
+}
