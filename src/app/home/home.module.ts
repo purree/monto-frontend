@@ -11,6 +11,7 @@ import { ShowUserspotComponent } from '../components/show-userspot/show-userspot
 import { StartNewRouteComponent } from '../components/start-new-route/start-new-route.component';
 import { PredefinedRoutesComponent } from '../components/predefined-routes/predefined-routes.component';
 import { FactPacketToastComponent } from '../components/fact-packet-toast/fact-packet-toast.component';
+import { FactPacketPopupComponent } from '../components/fact-packet-popup/fact-packet-popup.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { FactPacketToastComponent } from '../components/fact-packet-toast/fact-p
     ShowUserspotComponent,
     StartNewRouteComponent,
     PredefinedRoutesComponent,
-    FactPacketToastComponent
+    FactPacketToastComponent,
+    FactPacketPopupComponent
   ]
 })
 export class HomePageModule { }

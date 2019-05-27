@@ -56,6 +56,7 @@
 </ion-content>
 
 <app-fact-packet-toast></app-fact-packet-toast>
+<app-fact-packet-popup *ngIf="selectedFactPacket" [fact]="selectedFactPacket" (close)="closePopups($event)"></app-fact-packet-popup>
 <app-start-new-route *ngIf="showStartNewRoute" (startRoute)="startRoute()" (close)="closePopups($event)"
   [activeRoute]="activeRoute">
 </app-start-new-route>

@@ -25,6 +25,7 @@ export class HomePage {
   popupForUserSpot: boolean = false;
   factSpots: any;
   selectedUserSpot: any;
+  selectedFactPacket: any;
 
   userHref: string;
   userPositionWatcher: Observable<Geoposition>;
@@ -176,7 +177,7 @@ export class HomePage {
     fact.seen = true;
     window.navigator.vibrate(200);
     let factMarker = this.mapService.factSpotMarkers.find(f => f.id == fact.id).marker;
-    factMarker.addListener('click', () => console.log(fact));
+    factMarker.addListener('click', () => this.onSelectFactPacket(fact));
     factMarker.setAnimation(google.maps.Animation.BOUNCE);
     factMarker.setIcon({ ...factMarker.getIcon(), 'fillColor': '#FFD700' });
     this.ev.publish('factInRange');
@@ -232,6 +233,7 @@ export class HomePage {
   closePopups() {
     this.currentAttraction = null;
     this.selectedUserSpot = null;
+    this.selectedFactPacket = null;
     this.popupForUserSpot = false;
     this.showStartNewRoute = false;
   }
@@ -242,6 +244,10 @@ export class HomePage {
 
   createTempRoute() {
     this.showStartNewRoute = true;
+  }
+
+  onSelectFactPacket(fact: any): void {
+    this.selectedFactPacket = fact;
   }
 
   onSelect(item: any): void {
