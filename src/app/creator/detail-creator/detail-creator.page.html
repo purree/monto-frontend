@@ -9,6 +9,7 @@
 
 <ion-content padding>
   <h2>{{ creator?.firstName }} {{ creator?.lastName }}</h2>
+  <p>{{ creator?.description }}</p>
   <ion-list>
     <ion-list-header>Statues</ion-list-header>
     <ion-item *ngFor="let attraction of creator?.attractions" [routerLink]="'/list/' + attraction.id">
