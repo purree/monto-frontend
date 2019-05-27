@@ -1,4 +1,8 @@
 import { Injectable } from '@angular/core';
+import { ApiService } from '../../api.service';
+import { Observable } from 'rxjs';
+import { Geoposition } from '@ionic-native/geolocation/ngx';
+
 
 declare var google;
 
@@ -15,7 +19,14 @@ export class MapService {
   userSpotMarkers: any = [];
   factSpotMarkers: any = [];
 
-  constructor() { }
+  activeRoute: any;
+  defaultAttractions: any;
+  routeStarted: boolean = false;
+  isRouteCreator: boolean = false;
+
+  userPositionWatcher: Observable<Geoposition>;
+
+  constructor(private api: ApiService) { }
 
   setMarkerIcon(markerId, icon) {
     this.markers.find(marker => marker.id == markerId).marker.setIcon(icon);
@@ -68,6 +79,7 @@ export class MapService {
   };
 
   displayRoute(origin, waypoints) {
+    this.clearRoute();
     if (!this.directionsService) {
       this.directionsService = new google.maps.DirectionsService;
       this.directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });

@@ -3,8 +3,8 @@
     <ion-buttons color="black" slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{ activeRoute?.routeName }}</ion-title>
-    <ion-buttons *ngIf="routeStarted" slot="end">
+    <ion-title>{{ mapService.activeRoute?.routeName }}</ion-title>
+    <ion-buttons *ngIf="mapService.routeStarted" slot="end">
       <ion-button (click)="endRoute()" fill="solid" color="danger">
         End
       </ion-button>
@@ -13,11 +13,11 @@
 </ion-header>
 
 <ion-content>
-  <app-predefined-routes *ngIf="!routeStarted" [activeRoute]="activeRoute"
+  <app-predefined-routes *ngIf="!mapService.routeStarted" [activeRoute]="mapService.activeRoute"
     (selectRoute)="selectPredefinedRoute($event)"></app-predefined-routes>
   <div class="map-wrapper">
-    <div #map [ngClass]="{'map-route-started': routeStarted == true}" id="map"></div>
-    <div *ngIf="activeRoute && activeRoute?.attractions?.length > 0 && !routeStarted">
+    <div #map [ngClass]="{'map-route-started': mapService.routeStarted == true}" id="map"></div>
+    <div *ngIf="mapService.activeRoute && mapService.activeRoute?.attractions?.length > 0 && !mapService.routeStarted">
       <ion-grid class="full-width-grid">
         <ion-row>
           <ion-col>
@@ -43,12 +43,12 @@
       </ion-grid>
     </div>
   </div>
-  <ion-fab class="locateMe" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab *ngIf="mapService.userMarker" class="locateMe" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="locateMe()">
       <ion-icon name="locate"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  <ion-fab *ngIf="routeStarted && isRouteCreator" vertical="bottom" horizontal="end">
+  <ion-fab *ngIf="mapService.routeStarted && mapService.isRouteCreator" vertical="bottom" horizontal="end">
     <ion-fab-button (click)="popupForUserSpot = true">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
@@ -56,15 +56,15 @@
 </ion-content>
 
 <app-fact-packet-toast></app-fact-packet-toast>
-<app-fact-packet-popup *ngIf="selectedFactPacket" [fact]="selectedFactPacket" [isRouteCreator]="isRouteCreator" (close)="closePopups($event)"
+<app-fact-packet-popup *ngIf="selectedFactPacket" [fact]="selectedFactPacket" [isRouteCreator]="mapService.isRouteCreator" (close)="closePopups($event)"
   (delete)="deleteSpot($event)"></app-fact-packet-popup>
 <app-start-new-route *ngIf="showStartNewRoute" (startRoute)="startRoute()" (close)="closePopups($event)"
-  [activeRoute]="activeRoute">
+  [activeRoute]="mapService.activeRoute">
 </app-start-new-route>
-<app-show-userspot *ngIf="selectedUserSpot" (close)="closePopups($event)" [userSpot]="selectedUserSpot" [isRouteCreator]="isRouteCreator"
+<app-show-userspot *ngIf="selectedUserSpot" (close)="closePopups($event)" [userSpot]="selectedUserSpot" [isRouteCreator]="mapService.isRouteCreator"
   (delete)="deleteSpot($event)">
 </app-show-userspot>
-<app-create-userspot *ngIf="isRouteCreator && popupForUserSpot" [activeRoute]="activeRoute" [userPosition]="mapService.userMarker"
+<app-create-userspot *ngIf="mapService.isRouteCreator && popupForUserSpot" [activeRoute]="mapService.activeRoute" [userPosition]="mapService.userMarker"
   (close)="closePopups($event)" (userSpotCreated)="userSpotCreated($event)"></app-create-userspot>
 <app-attraction-popup *ngIf="currentAttraction" (close)="closePopups($event)" [attraction]="currentAttraction">
 </app-attraction-popup>
@@ -79,7 +79,7 @@
         <ion-icon name="information-circle-outline"></ion-icon>
         Info
       </ion-button>
-      <div *ngIf="isRouteCreator">
+      <div *ngIf="mapService.isRouteCreator">
         <ion-button size="small" color="success" *ngIf="!selectedAttraction.inRoute; else not_in_active"
           (click)="handleAddToRouteClick()">
           <ion-icon name="add"></ion-icon>
