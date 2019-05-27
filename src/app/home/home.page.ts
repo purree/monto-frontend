@@ -222,14 +222,21 @@ export class HomePage {
     }
   }
 
-  userSpotCreated(userSpot) {
+  userSpotCreated(spot) {
+    console.log(spot);
     this.popupForUserSpot = null;
-    userSpot.gposition = new google.maps.LatLng(userSpot.position.latitude, userSpot.position.longitude);
-    let marker = this.mapService.createMarker(userSpot.gposition, 'yellow', () => {
-      this.mapService.map.panTo(marker.getPosition());
-      this.showUserSpotPopup(userSpot);
-    });
-    this.mapService.userSpotMarkers.push({ id: userSpot.id, marker });
+    spot.gposition = new google.maps.LatLng(spot.position.latitude, spot.position.longitude);
+    if (spot.title === 'Fact') {
+      let marker = this.mapService.createFactMarker(spot.gposition);
+      this.activeRoute.attractions.push(spot);
+      this.mapService.factSpotMarkers.push({ id: spot.id, marker });
+    } else {
+      let marker = this.mapService.createMarker(spot.gposition, 'yellow', () => {
+        this.mapService.map.panTo(marker.getPosition());
+        this.showUserSpotPopup(spot);
+      });
+      this.mapService.userSpotMarkers.push({ id: spot.id, marker });
+    }
   }
 
   closePopups() {
