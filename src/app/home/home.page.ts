@@ -33,8 +33,8 @@ export class HomePage {
     private api: ApiService,
     private geolocation: Geolocation,
     private menuCtrl: MenuController,
-    private mapService: MapService,
-    private ev: Events
+    private ev: Events,
+    public mapService: MapService
   ) { }
 
   ionViewWillEnter() {
