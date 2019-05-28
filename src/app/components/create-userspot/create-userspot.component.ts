@@ -25,7 +25,7 @@ export class CreateUserspotComponent implements OnInit {
     { name: "Café", defaultDescription: "Check out this cozy café" },
     { name: "Vista", defaultDescription: "The view from this spot is amazing!" },
     { name: "Bar", defaultDescription: "Cheap beers and fast service" },
-    { name: "Resturant", defaultDescription: "The foie gras here is to die for" },
+    { name: "Restaurant", defaultDescription: "The foie gras here is to die for" },
     { name: "Fact", defaultDescription: "Add a fact about this location!" },
     { name: "Other", defaultDescription: "Sweet spot" }
   ];

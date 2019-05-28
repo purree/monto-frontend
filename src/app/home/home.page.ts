@@ -121,11 +121,7 @@ export class HomePage {
   renderMarkers(attractions) {
     let markers = attractions.map(attr => {
       attr.gposition = new google.maps.LatLng(attr.position.latitude, attr.position.longitude);
-      let color = 'red';
-      if (this.mapService.activeRoute && this.mapService.activeRoute.attractions.length) {
-        color = (!!this.mapService.activeRoute.attractions.find(x => x.id == attr.id)) ? 'green' : 'red';
-      }
-      let marker = this.mapService.createMarker(attr.gposition, color, () => {
+      let marker = this.mapService.createMarker(attr, () => {
         this.mapService.map.panTo(marker.getPosition());
         this.onSelect(attr);
       });
@@ -138,7 +134,7 @@ export class HomePage {
     if (userSpots) {
       let userSpotMarkers = userSpots.map(spot => {
         spot.gposition = new google.maps.LatLng(spot.position.latitude, spot.position.longitude);
-        let marker = this.mapService.createMarker(spot.gposition, 'yellow', () => {
+        let marker = this.mapService.createUserSpotMarker(spot, () => {
           this.mapService.map.panTo(marker.getPosition());
           this.showUserSpotPopup(spot);
         });
@@ -185,6 +181,7 @@ export class HomePage {
 
   arrivedAtAttraction(attraction) {
     attraction.seen = true;
+    this.mapService.setMarkerIcon(attraction.id, this.mapService.colors.greenSeen);
     window.navigator.vibrate(200);
     this.currentAttraction = attraction;
     this.api.getUser().then((user) => this.api.addToSeenAttractions(user, attraction.id).subscribe());
@@ -196,7 +193,7 @@ export class HomePage {
     let factMarker = this.mapService.factSpotMarkers.find(f => f.id == fact.id).marker;
     factMarker.addListener('click', () => this.onSelectFactPacket(fact));
     factMarker.setAnimation(google.maps.Animation.BOUNCE);
-    factMarker.setIcon({ ...factMarker.getIcon(), 'fillColor': '#FFD700' });
+    factMarker.setIcon({ ...factMarker.getIcon(), 'fillColor': this.mapService.colors.factFillUnlocked });
     this.ev.publish('factInRange');
     setTimeout(() => factMarker.setAnimation(null), 2000);
   }
@@ -245,7 +242,7 @@ export class HomePage {
       this.mapService.activeRoute.attractions.push(spot);
       this.mapService.factSpotMarkers.push({ id: spot.id, marker });
     } else {
-      let marker = this.mapService.createMarker(spot.gposition, 'yellow', () => {
+      let marker = this.mapService.createUserSpotMarker(spot, () => {
         this.mapService.map.panTo(marker.getPosition());
         this.showUserSpotPopup(spot);
       });
@@ -295,7 +292,7 @@ export class HomePage {
     this.api.addAttractionToRoute(this.mapService.activeRoute.id, this.selectedAttraction.id).subscribe(data => {
       this.mapService.activeRoute.attractions.push(this.selectedAttraction);
       this.selectedAttraction.inRoute = true;
-      this.mapService.setMarkerIcon(this.selectedAttraction.id, 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+      this.mapService.setMarkerIcon(this.selectedAttraction.id, this.mapService.colors.green);
       this.selectedAttraction = null;
     });
   }
@@ -305,7 +302,7 @@ export class HomePage {
       if (!data) {
         this.mapService.activeRoute.attractions = this.mapService.activeRoute.attractions.filter(x => x.id !== attractionId);
         this.selectedAttraction.inRoute = false;
-        this.mapService.setMarkerIcon(this.selectedAttraction.id, 'http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+        this.mapService.setMarkerIcon(this.selectedAttraction.id, this.mapService.colors.red);
       }
       this.selectedAttraction = null;
     });
