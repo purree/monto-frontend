@@ -137,8 +137,9 @@ export class HomePage {
   renderUserSpots(userSpots) {
     if (userSpots) {
       let userSpotMarkers = userSpots.map(spot => {
+        console.log(spot);
         spot.gposition = new google.maps.LatLng(spot.position.latitude, spot.position.longitude);
-        let marker = this.mapService.createMarker(spot.gposition, 'yellow', () => {
+        let marker = this.mapService.createUserSpotMarker(spot, () => {
           this.mapService.map.panTo(marker.getPosition());
           this.showUserSpotPopup(spot);
         });
