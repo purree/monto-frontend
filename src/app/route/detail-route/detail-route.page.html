@@ -54,7 +54,8 @@
   </ion-list-header>
   <ion-chip>
     <ion-avatar>
-      <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+      <img [src]="this.route?.creator?.profilePicture ? 
+      this.route?.creator?.profilePicture : 'https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y'">
     </ion-avatar>
     <ion-label>{{ route?.creator?.username }}</ion-label>
   </ion-chip>
@@ -109,7 +110,8 @@
           </h3>
           <ion-chip>
             <ion-avatar>
-              <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+              <img [src]="rating?.userInfo?.profilePicture ?
+              rating?.userInfo?.profilePicture : 'https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y'">
             </ion-avatar>
             <ion-label>{{ rating?.userInfo?.username }}</ion-label>
           </ion-chip>
