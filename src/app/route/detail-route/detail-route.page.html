@@ -126,7 +126,8 @@
     </ion-button>
   </ng-template>
 
-  <ion-fab color="light" vertical="top" horizontal="end">
+  <ion-fab color="light" vertical="top" horizontal="end"
+  *ngIf="isMobile;else fromWeb">
     <ion-fab-button>
       <ion-icon name="share"></ion-icon>
     </ion-fab-button>
@@ -146,6 +147,14 @@
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
+
+  <ng-template #fromWeb>
+    <ion-fab color="light" vertical="top" horizontal="end">
+      <ion-fab-button (click)="shareFromWeb()">
+        <ion-icon name="share"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ng-template>
 
   <app-delete-confirm-popup *ngIf="showAreYouSure" (delete)="deleteRoute()" (close)="closeAreYouSure()"></app-delete-confirm-popup>
 
