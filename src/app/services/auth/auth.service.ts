@@ -70,7 +70,7 @@ export class AuthService {
     }
   }
 
-  handleRidirectResult = firebase.auth().getRedirectResult().then(response => {
+  handleRedirectResult = firebase.auth().getRedirectResult().then(response => {
     if (response.user) {
       let user = {
         'displayName': response.user.displayName,
@@ -78,6 +78,7 @@ export class AuthService {
         'photoUrl': response.user.photoURL,
         'userHref': ''
       }
+      console.log(user.photoUrl);
       this.user = user;
       this.checkAccount(response.user)
     }
@@ -92,6 +93,10 @@ export class AuthService {
         ...this.user,
         userHref: userData._links.self.href,
         id: userData.id
+      }
+      if(!userData.profilePicture){
+        console.log(user.photoUrl);
+        this.api.patchUserProfilePicture(this.user.userHref,this.user.photoUrl).subscribe();
       }
       this.storage.set('user', this.user);
       this.storage.set('userHref', userData._links.self.href);

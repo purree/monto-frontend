@@ -19,6 +19,20 @@ export class ApiService {
     return await this.storage.get('userHref').then((userHref) => userHref);
   }
 
+  patchUserProfilePicture(userHref, picture: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    let userData = {
+      "profilePicture":picture
+      }
+      console.log(picture);
+      return this.http.patch(userHref, userData, httpOptions);
+  }
+
   findByEmail(username: string) {
     return this.http.get(`${apiUrl}/users/search/findByEmail?email=${username}`);
   }
