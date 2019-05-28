@@ -64,6 +64,7 @@ export class DetailRoutePage implements OnInit {
     let routeId = this.activatedRoute.snapshot.paramMap.get('id');
     this.api.getRoute(routeId).subscribe(data => {
       this.route = data;
+      this.route.attractions = this.route.attractions.filter(attraction => attraction.category.id === 1 );
       this.api.getRouteCreator(this.route.id).subscribe(data => {
         this.route.creator = data;
         this.api.getUser().then((userHref) => {
@@ -164,7 +165,7 @@ export class DetailRoutePage implements OnInit {
     if (newVariable.share) {
       newVariable.share({
       title: 'Checkout this Route!',
-      text: 'You should walk this beautiful route when you have got the time!',
+      text: 'You should walk this beautiful route when you have got the time! #monto#stockholm',
       url: this.url
       })
       .then(() => {console.log('Thanks for sharing!');
@@ -180,7 +181,7 @@ export class DetailRoutePage implements OnInit {
     // let file = await this.resolveLocalFile();
     console.log('im here!');
     this.socialSharing.shareViaEmail(this.text, 'My custom subject',
-     ['saimon@devdactic.com'], null, null, null/*file.nativeURL*/).then((any) => {
+     null, null, null, null/*file.nativeURL*/).then((any) => {
       // this.removeTempFile(file.name);
       console.log('Now im here: ' + any);
     }).catch((e) => {
