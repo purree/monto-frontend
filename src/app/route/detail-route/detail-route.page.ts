@@ -6,6 +6,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AuthService } from '../../services/auth/auth.service';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-detail-route',
@@ -22,6 +23,7 @@ export class DetailRoutePage implements OnInit {
   route: any;
   text: string;
   url: string;
+  isMobile: boolean;
 
   routeForm: FormGroup;
 
@@ -33,11 +35,17 @@ export class DetailRoutePage implements OnInit {
     private api: ApiService,
     private formBuilder: FormBuilder,
     private router: Router,
+    private platform: Platform,
     private auth: AuthService) {
     this.url = window.location.pathname;
   }
 
   ngOnInit() {
+    if (this.platform.is('cordova')) {
+      this.isMobile = true;
+    } else {
+      this.isMobile = false;
+    }
   }
 
   ionViewWillLeave() {
@@ -150,11 +158,30 @@ export class DetailRoutePage implements OnInit {
     this.file.removeFile(this.file.cacheDirectory, name);
   }
 
+  async shareFromWeb() {
+    let newVariable;
+    newVariable = navigator;
+    if (newVariable.share) {
+      newVariable.share({
+      title: 'Checkout this Route!',
+      text: 'You should walk this beautiful route when you have got the time!',
+      url: this.url
+      })
+      .then(() => {console.log('Thanks for sharing!');
+    })
+      .catch((err) => {console.log('Could not share because ', err.message);
+    });
+    } else {
+      console.log('This browser is not supported!')
+    }
+  }
+
   async shareEmail() {
-    //let file = await this.resolveLocalFile();
+    // let file = await this.resolveLocalFile();
     console.log('im here!');
-    this.socialSharing.shareViaEmail(this.text, 'My custom subject', ['saimon@devdactic.com'], null, null, null/*file.nativeURL*/).then((any) => {
-      //this.removeTempFile(file.name);
+    this.socialSharing.shareViaEmail(this.text, 'My custom subject',
+     ['saimon@devdactic.com'], null, null, null/*file.nativeURL*/).then((any) => {
+      // this.removeTempFile(file.name);
       console.log('Now im here: ' + any);
     }).catch((e) => {
       console.log(e);
