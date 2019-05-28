@@ -38,6 +38,7 @@ export class CreateUserspotComponent implements OnInit {
   }
 
   categoryChange() {
+    console.log(this.category);
     if (this.description == '') {
       this.description = this.userSpotCategoryOptions.find(usco => usco.name == this.category).defaultDescription;
     }

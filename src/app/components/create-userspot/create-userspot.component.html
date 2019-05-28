@@ -13,7 +13,9 @@
       <ion-textarea [(ngModel)]="description"></ion-textarea>
     </ion-item>
   </ion-list>
-  <ion-button (click)="saveSpot()">
+  <ion-button
+    [disabled]="!category"
+   (click)="saveSpot()">
     Add marker
   </ion-button>
 </ion-card>
