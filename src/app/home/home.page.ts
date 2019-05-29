@@ -22,7 +22,7 @@ export class HomePage {
   factSpots: any;
   selectedUserSpot: any;
   selectedFactPacket: any;
-  showCompleted: boolean = true;
+  showCompleted: boolean = false;
 
   userHref: string;
   userPositionSub: Subscription;
