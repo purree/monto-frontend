@@ -22,6 +22,7 @@ export class HomePage {
   factSpots: any;
   selectedUserSpot: any;
   selectedFactPacket: any;
+  showCompleted: boolean = false;
 
   userHref: string;
   userPositionSub: Subscription;
@@ -185,6 +186,8 @@ export class HomePage {
     window.navigator.vibrate(200);
     this.currentAttraction = attraction;
     this.api.getUser().then((user) => this.api.addToSeenAttractions(user, attraction.id).subscribe());
+    this.mapService.routeCompleted = this.mapService.activeRoute.attractions.filter(a => a.category.id == 1).every(a => a.seen);
+    console.log(this.mapService.routeCompleted);
   }
 
   factInRange(fact) {
@@ -256,6 +259,10 @@ export class HomePage {
     this.selectedFactPacket = null;
     this.popupForUserSpot = false;
     this.showStartNewRoute = false;
+  }
+
+  handleFinishRoute() {
+    this.showCompleted = true;
   }
 
   showUserSpotPopup(spot: any) {

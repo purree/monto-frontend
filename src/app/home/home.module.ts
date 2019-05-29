@@ -12,6 +12,7 @@ import { StartNewRouteComponent } from '../components/start-new-route/start-new-
 import { PredefinedRoutesComponent } from '../components/predefined-routes/predefined-routes.component';
 import { FactPacketToastComponent } from '../components/fact-packet-toast/fact-packet-toast.component';
 import { FactPacketPopupComponent } from '../components/fact-packet-popup/fact-packet-popup.component';
+import { RouteCompletedComponent } from '../components/route-completed/route-completed.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { FactPacketPopupComponent } from '../components/fact-packet-popup/fact-p
     StartNewRouteComponent,
     PredefinedRoutesComponent,
     FactPacketToastComponent,
-    FactPacketPopupComponent
+    FactPacketPopupComponent,
+    RouteCompletedComponent
   ]
 })
 export class HomePageModule { }
