@@ -6,7 +6,10 @@
   <p>
     You've arrived at the "{{ attraction.titleEnglish }}" monument.
   </p>
-  <ion-button expand="block" [routerLink]="'/list/' + attraction.id">
+  <ion-button [routerLink]="'/list/' + attraction.id">
     View info
+  </ion-button>
+  <ion-button class="right" (click)="onHelpMeFind()" color="warning">
+    Help me find
   </ion-button>
 </ion-card>

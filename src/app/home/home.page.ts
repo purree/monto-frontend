@@ -23,6 +23,7 @@ export class HomePage {
   selectedUserSpot: any;
   selectedFactPacket: any;
   showCompleted: boolean = false;
+  helpMeFindActive: boolean = false;
 
   userHref: string;
   userPositionSub: Subscription;
@@ -161,6 +162,22 @@ export class HomePage {
     if (this.mapService.userMarker) {
       this.mapService.map.panTo(this.mapService.userMarker.getPosition());
     }
+  }
+
+  helpMeFind() {
+    let attraction = this.currentAttraction || this.selectedAttraction;
+    this.helpMeFindActive = true;
+    this.mapService.map.panTo(attraction.gposition);
+    this.mapService.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+    this.mapService.map.setTilt(0);
+    this.mapService.map.setZoom(19);
+    this.closePopups();
+  }
+
+  deactivateHelpMeFind() {
+    this.helpMeFindActive = false;
+    this.mapService.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+    this.mapService.map.setZoom(17);
   }
 
   handleUserMove(position: Geoposition): void {

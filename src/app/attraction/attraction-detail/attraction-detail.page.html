@@ -32,16 +32,18 @@
       <ion-label>{{ creator.firstName }} {{ creator.lastName }}</ion-label>
     </ion-chip>
   </ion-list>
-  <div *ngIf="activeRoute">
-    <div *ngIf="!inActiveRoute; else not_in_active">
-      <ion-button expand="block" (click)="addAttractionToRoute()">
-        Add to route
-      </ion-button>
+  <div *ngIf="isRouteCreator">
+    <div *ngIf="activeRoute">
+      <div *ngIf="!inActiveRoute; else not_in_active">
+        <ion-button expand="block" (click)="addAttractionToRoute()">
+          Add to route
+        </ion-button>
+      </div>
+      <ng-template #not_in_active>
+        <ion-button color="danger" expand="block" (click)="removeAttractionFromRoute(attraction?.id)">
+          Remove from route
+        </ion-button>
+      </ng-template>
     </div>
-    <ng-template #not_in_active>
-      <ion-button color="danger" expand="block" (click)="removeAttractionFromRoute(attraction?.id)">
-        Remove from route
-      </ion-button>
-    </ng-template>
   </div>
 </ion-content>
