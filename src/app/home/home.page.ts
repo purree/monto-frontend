@@ -176,7 +176,7 @@ export class HomePage {
 
   deactivateHelpMeFind() {
     this.helpMeFindActive = false;
-    this.mapService.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+    this.mapService.map.setMapTypeId('styled_map');
     this.mapService.map.setZoom(17);
   }
 
