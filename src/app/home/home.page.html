@@ -79,7 +79,7 @@
         <ion-icon name="information-circle-outline"></ion-icon>
         Info
       </ion-button>
-      <div *ngIf="mapService.isRouteCreator">
+      <div *ngIf="mapService.isRouteCreator || !mapService.activeRoute">
         <ion-button size="small" color="success" *ngIf="!selectedAttraction.inRoute; else not_in_active"
           (click)="handleAddToRouteClick()">
           <ion-icon name="add"></ion-icon>

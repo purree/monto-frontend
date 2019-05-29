@@ -294,6 +294,10 @@ export class HomePage {
       this.selectedAttraction.inRoute = true;
       this.mapService.setMarkerIcon(this.selectedAttraction.id, this.mapService.colors.green);
       this.selectedAttraction = null;
+      // this is never reachable as attractions not in route is hidden
+      //if (this.mapService.routeStarted) {
+      //  this.mapService.displayRoute(this.mapService.userMarker.position, this.mapService.activeRoute.attractions.filter(a => a.category.id !== 3));
+      //}
     });
   }
 
@@ -305,6 +309,11 @@ export class HomePage {
         this.mapService.setMarkerIcon(this.selectedAttraction.id, this.mapService.colors.red);
       }
       this.selectedAttraction = null;
+      if (this.mapService.routeStarted && this.mapService.activeRoute.attractions.length) {
+        this.mapService.displayRoute(this.mapService.userMarker.position, this.mapService.activeRoute.attractions.filter(a => a.category.id !== 3));
+        this.mapService.markers.find(m => m.id === attractionId).marker.setMap(null);
+        //this.mapService.setMarkerIcon(attractionId, '#ff0000');
+      }
     });
   }
 }
