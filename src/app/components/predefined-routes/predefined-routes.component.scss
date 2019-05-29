@@ -1,3 +1,5 @@
+$highlight-color: #3780ff;
+
 .routes-row {
     display: flex;
     overflow: auto;
@@ -8,14 +10,26 @@
 }
 
 .route-container {
+    transition: border-color 1000ms;
+    border: 2px solid transparentize($color: $highlight-color, $amount: 1);    
     flex: 0 0 17vh;
     display: flex;
     align-items: center;
     margin-top: 0;
     margin-left: 0;
     box-shadow: none;
+    border-radius: 0;
     &::-webkit-scrollbar {
         display: none;
+    }
+    &.activeRoute{
+        border-bottom: 2px solid $highlight-color;
+        ion-avatar {
+            border: 2px solid transparentize($color: $highlight-color, $amount: 0.5);
+        }
+        ion-card-subtitle {
+            font-weight: bolder;
+        }
     }
 }
 
@@ -35,6 +49,7 @@ ion-card-subtitle {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-weight: 400;
 }
 
 .sc-ion-card-ios-h {

@@ -83,7 +83,7 @@
     "tslint": "~5.16.0",
     "typescript": "~3.1.6"
   },
-  "description": "An Ionic project",
+  "description": "A new way to explore the culture of stockholm.",
   "cordova": {
     "plugins": {
       "cordova-plugin-geolocation": {
