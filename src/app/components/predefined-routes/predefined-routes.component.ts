@@ -18,6 +18,7 @@ export class PredefinedRoutesComponent implements OnInit {
     '/assets/img/2.JPG',
     '/assets/img/9.JPG',
     '/assets/img/4.JPG',
+    '/assets/img/Nod.jpg'
   ];
 
   constructor(private api: ApiService) { }
