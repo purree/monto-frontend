@@ -59,7 +59,7 @@ export class HomePage {
     }
     this.geolocation.getCurrentPosition().then((resp) => {
       this.mapService.createUserMarker(new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude));
-      this.mapService.userPositionWatcher = this.geolocation.watchPosition({ enableHighAccuracy: true });
+      this.mapService.userPositionWatcher = this.geolocation.watchPosition({ enableHighAccuracy: true, maximumAge: 0 });
       this.userPositionSub = this.mapService.userPositionWatcher.subscribe((pos: Geoposition) => this.handleUserMove(pos));
     }).catch(error => console.log('Error getting location', error));
 
