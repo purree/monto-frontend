@@ -206,7 +206,7 @@ export class MapService {
       path: this.icons.User,
       fillColor: this.colors.userBlue,
       fillOpacity: 1,
-      anchor: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(0, -20),
       strokeWeight: 15,
       strokeOpacity: 0.5,
       strokeColor: this.colors.userBlue,
