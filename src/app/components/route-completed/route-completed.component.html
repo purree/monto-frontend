@@ -1,3 +1,22 @@
-<p>
-  route-completed works!
-</p>
+<ion-card id="card" class="map-card" padding>
+  <ion-icon class="card-close-icon ion-text-right" (click)="closePopup()" name="close"></ion-icon>
+  <ion-card-title>
+    You finished the {{ activeRoute?.routeName }}!
+  </ion-card-title>
+  <ion-grid>
+    <ion-row>
+      <ion-icon color="success" name="checkmark-circle-outline"></ion-icon>
+    </ion-row>
+  </ion-grid>
+  <p>
+    You did it! ✌️ Share this route with a friend or leave a review to express your feelings.
+  </p>
+  <ion-button [routerLink]="'/create-review/' + activeRoute?.id" >
+    Review
+    <ion-icon slot="end" name="star"></ion-icon>
+  </ion-button>
+  <ion-button (click)="shareRoute()" class="right">
+    Share
+    <ion-icon slot="end" name="share"></ion-icon>
+  </ion-button>
+</ion-card>

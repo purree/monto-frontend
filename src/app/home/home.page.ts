@@ -22,7 +22,7 @@ export class HomePage {
   factSpots: any;
   selectedUserSpot: any;
   selectedFactPacket: any;
-  showCompleted: boolean = false;
+  showCompleted: boolean = true;
 
   userHref: string;
   userPositionSub: Subscription;
@@ -59,7 +59,7 @@ export class HomePage {
     }
     this.geolocation.getCurrentPosition().then((resp) => {
       this.mapService.createUserMarker(new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude));
-      this.mapService.userPositionWatcher = this.geolocation.watchPosition();
+      this.mapService.userPositionWatcher = this.geolocation.watchPosition({ enableHighAccuracy: true, maximumAge: 0 });
       this.userPositionSub = this.mapService.userPositionWatcher.subscribe((pos: Geoposition) => this.handleUserMove(pos));
     }).catch(error => console.log('Error getting location', error));
 
@@ -147,6 +147,7 @@ export class HomePage {
 
   renderFactSpots(factSpots) {
     if (factSpots) {
+      console.log(factSpots);
       let factSpotsMarkers = factSpots.map(fact => {
         fact.gposition = new google.maps.LatLng(fact.position.latitude, fact.position.longitude);
         let marker = this.mapService.createFactMarker(fact.gposition);
@@ -259,6 +260,7 @@ export class HomePage {
     this.selectedFactPacket = null;
     this.popupForUserSpot = false;
     this.showStartNewRoute = false;
+    this.showCompleted = false;
   }
 
   handleFinishRoute() {
