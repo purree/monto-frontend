@@ -22,10 +22,11 @@
     (selectRoute)="selectPredefinedRoute($event)"></app-predefined-routes>
   <div class="map-wrapper">
     <div #map [ngClass]="{'map-route-started': mapService.routeStarted == true}" id="map"></div>
-    <div *ngIf="mapService.activeRoute && mapService.activeRoute?.attractions?.length > 0 && !mapService.routeStarted">
-      <ion-grid class="full-width-grid">
-        <ion-row>
-          <ion-col>
+    <ion-grid class="full-width-grid">
+      <ion-row>
+        <ion-col>
+          <div
+            *ngIf="mapService.activeRoute && mapService.activeRoute?.attractions?.length > 0 && !mapService.routeStarted">
             <div *ngIf="mapService.userMarker; else noLocation">
               <ion-button *ngIf="!isTempRoute; else createRoute" (click)="startRoute()"
                 class="map-float-btn ion-margin-horizontal" expand="block">
@@ -43,10 +44,14 @@
                 <ion-spinner size="small" name="crescent"></ion-spinner>
               </ion-button>
             </ng-template>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
+          </div>
+          <ion-button *ngIf="helpMeFindActive" (click)="deactivateHelpMeFind()"
+            class="map-float-btn ion-margin-horizontal" color="success" expand="block">
+            Found it!
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
   <ion-fab *ngIf="mapService.userMarker" class="locateMe" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="locateMe()">
@@ -73,9 +78,11 @@
 <app-create-userspot *ngIf="mapService.isRouteCreator && popupForUserSpot" [activeRoute]="mapService.activeRoute"
   [userPosition]="mapService.userMarker" (close)="closePopups($event)" (userSpotCreated)="userSpotCreated($event)">
 </app-create-userspot>
-<app-attraction-popup *ngIf="currentAttraction" (close)="closePopups($event)" [attraction]="currentAttraction">
+<app-attraction-popup *ngIf="currentAttraction" (close)="closePopups($event)" (helpMeFind)="helpMeFind($event)"
+  [attraction]="currentAttraction">
 </app-attraction-popup>
-<app-route-completed *ngIf="showCompleted" [activeRoute]="mapService.activeRoute" (close)="closePopups($event)"></app-route-completed>
+<app-route-completed *ngIf="showCompleted" [activeRoute]="mapService.activeRoute" (close)="closePopups($event)">
+</app-route-completed>
 
 <div *ngIf="selectedAttraction">
   <ion-card id="card" class="map-card">
@@ -100,6 +107,9 @@
           </ion-button>
         </ng-template>
       </div>
+      <ion-button *ngIf="mapService.routeStarted" size="small" class="right" (click)="helpMeFind()" color="warning">
+          Help me find
+        </ion-button>
     </ion-card-header>
   </ion-card>
 </div>

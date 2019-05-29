@@ -8,6 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class AttractionPopupComponent implements OnInit {
 
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
+  @Output() helpMeFind: EventEmitter<void> = new EventEmitter<void>();
   @Input() attraction: any;
 
   constructor() { }
@@ -18,5 +19,8 @@ export class AttractionPopupComponent implements OnInit {
     this.close.emit();
   }
 
+  onHelpMeFind() {
+    this.helpMeFind.emit();
+  }
 
 }
