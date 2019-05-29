@@ -4,9 +4,14 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>{{ mapService.activeRoute?.routeName }}</ion-title>
-    <ion-buttons *ngIf="mapService.routeStarted" slot="end">
+    <ion-buttons *ngIf="mapService.routeStarted && !mapService.routeCompleted" slot="end">
       <ion-button (click)="endRoute()" fill="solid" color="danger">
         End
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="mapService.routeStarted && mapService.routeCompleted" slot="end">
+      <ion-button (click)="handleFinishRoute()" fill="solid" color="success">
+        Finish
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -56,18 +61,21 @@
 </ion-content>
 
 <app-fact-packet-toast></app-fact-packet-toast>
-<app-fact-packet-popup *ngIf="selectedFactPacket" [fact]="selectedFactPacket" [isRouteCreator]="mapService.isRouteCreator" (close)="closePopups($event)"
-  (delete)="deleteSpot($event)"></app-fact-packet-popup>
+<app-fact-packet-popup *ngIf="selectedFactPacket" [fact]="selectedFactPacket"
+  [isRouteCreator]="mapService.isRouteCreator" (close)="closePopups($event)" (delete)="deleteSpot($event)">
+</app-fact-packet-popup>
 <app-start-new-route *ngIf="showStartNewRoute" (startRoute)="startRoute()" (close)="closePopups($event)"
   [activeRoute]="mapService.activeRoute">
 </app-start-new-route>
-<app-show-userspot *ngIf="selectedUserSpot" (close)="closePopups($event)" [userSpot]="selectedUserSpot" [isRouteCreator]="mapService.isRouteCreator"
-  (delete)="deleteSpot($event)">
+<app-show-userspot *ngIf="selectedUserSpot" (close)="closePopups($event)" [userSpot]="selectedUserSpot"
+  [isRouteCreator]="mapService.isRouteCreator" (delete)="deleteSpot($event)">
 </app-show-userspot>
-<app-create-userspot *ngIf="mapService.isRouteCreator && popupForUserSpot" [activeRoute]="mapService.activeRoute" [userPosition]="mapService.userMarker"
-  (close)="closePopups($event)" (userSpotCreated)="userSpotCreated($event)"></app-create-userspot>
+<app-create-userspot *ngIf="mapService.isRouteCreator && popupForUserSpot" [activeRoute]="mapService.activeRoute"
+  [userPosition]="mapService.userMarker" (close)="closePopups($event)" (userSpotCreated)="userSpotCreated($event)">
+</app-create-userspot>
 <app-attraction-popup *ngIf="currentAttraction" (close)="closePopups($event)" [attraction]="currentAttraction">
 </app-attraction-popup>
+<app-route-completed *ngIf="showCompleted" [activeRoute]="mapService.activeRoute"></app-route-completed>
 
 <div *ngIf="selectedAttraction">
   <ion-card id="card" class="map-card">

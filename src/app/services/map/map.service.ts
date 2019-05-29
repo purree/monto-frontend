@@ -23,6 +23,7 @@ export class MapService {
   defaultAttractions: any;
   routeStarted: boolean = false;
   isRouteCreator: boolean = false;
+  routeCompleted: boolean = false;
 
   userPositionWatcher: Observable<Geoposition>;
 
@@ -80,6 +81,7 @@ export class MapService {
   };
 
   displayRoute(origin, waypoints) {
+    console.log(waypoints);
     this.clearRoute();
     if (!this.directionsService) {
       this.directionsService = new google.maps.DirectionsService;
@@ -154,7 +156,6 @@ export class MapService {
   }
 
   createUserSpotMarker(userSpot, onClick) {
-    console.log(this.icons[userSpot.title]);
     const marker = this.googleMarker(userSpot.gposition, {
       path: this.icons[userSpot.title],
       fillColor: this.colors.userSpot,
