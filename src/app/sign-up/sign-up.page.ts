@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { MenuController } from '@ionic/angular';
 
+import { apiUrl } from '../../environments/environment';
+
+
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.page.html',
@@ -45,16 +48,19 @@ export class SignUpPage implements OnInit {
     let userData = {
       'username': this.userForm.value.username,
       'email': this.user.email
-    }
+    };
     this.api.createUser(userData).subscribe(response => {
       let userRes = <any>response;
-      console.log(response);
+      console.log('Create User' + response);
+      console.log('User Res' + userRes.id);
+
       this.storage.set('user',
         {
           ...this.user,
           'id': userRes.id,
           'username': userRes.username
-        }).then(()=>this .router.navigateByUrl('/home'));
+        });
+      this.storage.set('userHref', `${apiUrl}/users/${userRes.id}`).  then(() => this.router.navigateByUrl('/home'));
     });
   }
 
