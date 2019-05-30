@@ -228,9 +228,9 @@ export class MapService {
 
   googleMarker(position, icon) {
     return new google.maps.Marker({
-      position,
-      animation: google.maps.Animation.DROP,
       map: this.map,
+      animation: google.maps.Animation.DROP,
+      position,
       icon
     });
   }

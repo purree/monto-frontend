@@ -78,14 +78,15 @@ export class AuthService {
         'photoUrl': response.user.photoURL,
         'userHref': ''
       }
-      console.log(user.photoUrl);
       this.user = user;
+      console.log(user.photoUrl);
       this.checkAccount(response.user)
     }
   }).catch(error => console.log(error));
 
 
   checkAccount(user) {
+    console.log(user.displayName);
     this.api.findByEmail(user.email).subscribe(searchResult => {
       console.log(searchResult);
       let userData = <any>searchResult;
@@ -98,12 +99,14 @@ export class AuthService {
         console.log(user.photoUrl);
         this.api.patchUserProfilePicture(this.user.userHref,this.user.photoUrl).subscribe();
       }
+      console.log("WENT IN HERE");
       this.storage.set('user', this.user);
       this.storage.set('userHref', userData._links.self.href);
       this.router.navigateByUrl('/home');
     },
       error => {
-        // A 404 on from the api means no user with that email exists
+        // A 404 on from the api means no user with that email exist
+        this.storage.set('user', this.user);
         this.router.navigateByUrl('/sign-up');
       });
   }
