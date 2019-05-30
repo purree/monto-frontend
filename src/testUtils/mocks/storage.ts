@@ -1,9 +1,14 @@
+import { of } from 'rxjs';
+
 export class StorageMock {
     driver: string;
     vals: {
-        'userHref': '', 
-        'user': {}
-    };
+        userHref: ''
+    }
+
+    values = {
+        userHref: "/user/1"
+    }
 
     constructor() {
     }
@@ -16,8 +21,8 @@ export class StorageMock {
         return new Promise<LocalForage>((res) => res())
     }
 
-    get(key: string) {
-        return new Promise((res) => res(this.vals[key]))
+    async get(key: string) {
+        return await of(this.values.userHref);
     }
 
     set(key, val) {

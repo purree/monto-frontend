@@ -7,6 +7,10 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ApiService } from 'src/app/api.service';
+import { ApiServiceMock } from 'src/testUtils/mocks/apiService';
+import { ActivatedRoute } from '@angular/router';
+import reviews from 'src/testUtils/fixtures/reviews';
 
 describe('EditReviewPage', () => {
   let component: EditReviewPage;
@@ -14,19 +18,20 @@ describe('EditReviewPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditReviewPage ],
+      declarations: [EditReviewPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        { provide: Storage, useValue: '' },
+      providers: [{ provide: ApiService, useValue: new ApiServiceMock() },
+      { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: function () { return 1 } } } } }
       ],
       imports: [ReactiveFormsModule, FormsModule, IonicModule, HttpClientTestingModule, RouterTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EditReviewPage);
     component = fixture.componentInstance;
+    component.review = reviews[0];
     fixture.detectChanges();
   });
 
