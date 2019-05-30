@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import attractions from '../,,/../../../testUtils/fixtures/attractions';
 import { AttractionPopupComponent } from './attraction-popup.component';
 
 describe('AttractionPopupComponent', () => {
@@ -18,6 +19,7 @@ describe('AttractionPopupComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AttractionPopupComponent);
     component = fixture.componentInstance;
+    component.attraction = attractions[0];
     fixture.detectChanges();
   });
 

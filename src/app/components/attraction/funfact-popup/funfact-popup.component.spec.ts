@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import attractions from '../../,,/../../../testUtils/fixtures/attractions';
 import { FunfactPopupComponent } from './funfact-popup.component';
 
 describe('FunfactPopupComponent', () => {
@@ -18,6 +19,7 @@ describe('FunfactPopupComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FunfactPopupComponent);
     component = fixture.componentInstance;
+    component.funFact = attractions[0].funFact;
     fixture.detectChanges();
   });
 
