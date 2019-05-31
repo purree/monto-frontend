@@ -7,6 +7,12 @@
     right: 0;
     margin: auto;
     background-color: white;
+    height: 40vh;
+  }
+
+  p {
+    max-height: 25vh;
+    overflow-y: scroll;
   }
 
 .card-close-icon {

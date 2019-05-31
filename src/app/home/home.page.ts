@@ -31,6 +31,11 @@ export class HomePage {
   isTempRoute: boolean = false;
   showStartNewRoute: boolean = false;
 
+  distanceThresholds = {
+    statue: 30,
+    factPacket: 30
+  }
+
   constructor(
     private api: ApiService,
     private geolocation: Geolocation,
@@ -43,9 +48,12 @@ export class HomePage {
     if (this.mapService.userMarker) {
       this.mapService.userMarker.setMap(this.mapService.map);
     }
+    this.mapService.userPositionWatcher = this.geolocation.watchPosition({ enableHighAccuracy: true, maximumAge: 0 });
+    this.userPositionSub = this.mapService.userPositionWatcher.subscribe((pos: Geoposition) => this.handleUserMove(pos));
   }
 
   ionViewWillLeave() {
+    this.mapService.userPositionWatcher = null;
     this.userPositionSub.unsubscribe();
   }
 
@@ -60,8 +68,6 @@ export class HomePage {
     }
     this.geolocation.getCurrentPosition().then((resp) => {
       this.mapService.createUserMarker(new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude));
-      this.mapService.userPositionWatcher = this.geolocation.watchPosition({ enableHighAccuracy: true, maximumAge: 0 });
-      this.userPositionSub = this.mapService.userPositionWatcher.subscribe((pos: Geoposition) => this.handleUserMove(pos));
     }).catch(error => console.log('Error getting location', error));
 
   }
@@ -115,7 +121,7 @@ export class HomePage {
     this.api.setMyActiveRoute(this.userHref, route.id).subscribe(() => {
       this.fetchActiveRoute().then(() => {
         this.loadMarkers(false);
-        this.mapService.displayRoute(this.mapService.userMarker.position, this.mapService.activeRoute.attractions.filter(a => a.category.id !== 3));
+        this.mapService.displayRoute(this.mapService.userMarker.position, this.mapService.activeRoute.attractions.filter(a => a.category.id == 1));
       });
     });
   }
@@ -189,9 +195,9 @@ export class HomePage {
         .filter(attraction => attraction.category.id !== 2 && !attraction.seen)
         .forEach(attraction => {
           let distance: number = this.mapService.getDistance(userPosition, attraction.gposition)
-          if (attraction.category.id === 1 && distance <= 30) {
+          if (attraction.category.id === 1 && distance <= this.distanceThresholds.statue) {
             this.arrivedAtAttraction(attraction);
-          } else if (attraction.category.id === 3 && distance <= 100) {
+          } else if (attraction.category.id === 3 && distance <= this.distanceThresholds.factPacket) {
             this.factInRange(attraction);
           }
         });
@@ -200,7 +206,7 @@ export class HomePage {
 
   arrivedAtAttraction(attraction) {
     attraction.seen = true;
-    this.mapService.setMarkerIcon(attraction.id, this.mapService.colors.greenSeen);
+    this.mapService.setMarkerIcon(attraction.id, this.mapService.colors.greenSeen, this.mapService.icons.StatueSeen);
     window.navigator.vibrate(200);
     this.currentAttraction = attraction;
     this.api.getUser().then((user) => this.api.addToSeenAttractions(user, attraction.id).subscribe());
@@ -220,9 +226,9 @@ export class HomePage {
   }
 
   startRoute() {
-    let statuesAndUserspots = this.mapService.activeRoute.attractions.filter(attr => attr.category.id !== 3)
+    let statues = this.mapService.activeRoute.attractions.filter(attr => attr.category.id == 1)
     this.loadMarkers(false);
-    this.mapService.displayRoute(this.mapService.userMarker.position, statuesAndUserspots);
+    this.mapService.displayRoute(this.mapService.userMarker.position, statues);
     this.mapService.routeStarted = true;
   }
 
@@ -318,7 +324,7 @@ export class HomePage {
     this.api.addAttractionToRoute(this.mapService.activeRoute.id, this.selectedAttraction.id).subscribe(data => {
       this.mapService.activeRoute.attractions.push(this.selectedAttraction);
       this.selectedAttraction.inRoute = true;
-      this.mapService.setMarkerIcon(this.selectedAttraction.id, this.mapService.colors.green);
+      this.mapService.setMarkerIcon(this.selectedAttraction.id, this.mapService.colors.green, undefined);
       this.selectedAttraction = null;
       // this is never reachable as attractions not in route is hidden
       //if (this.mapService.routeStarted) {
@@ -332,11 +338,11 @@ export class HomePage {
       if (!data) {
         this.mapService.activeRoute.attractions = this.mapService.activeRoute.attractions.filter(x => x.id !== attractionId);
         this.selectedAttraction.inRoute = false;
-        this.mapService.setMarkerIcon(this.selectedAttraction.id, this.mapService.colors.red);
+        this.mapService.setMarkerIcon(this.selectedAttraction.id, this.mapService.colors.red, undefined);
       }
       this.selectedAttraction = null;
       if (this.mapService.routeStarted && this.mapService.activeRoute.attractions.length) {
-        this.mapService.displayRoute(this.mapService.userMarker.position, this.mapService.activeRoute.attractions.filter(a => a.category.id !== 3));
+        this.mapService.displayRoute(this.mapService.userMarker.position, this.mapService.activeRoute.attractions.filter(a => a.category.id == 1));
         this.mapService.markers.find(m => m.id === attractionId).marker.setMap(null);
         //this.mapService.setMarkerIcon(attractionId, '#ff0000');
       }

@@ -2,13 +2,18 @@
     display: block;
     position: absolute;
     width: 80vw;
-    top: 20vh;
+    bottom: 0;
     left: 0;
     right: 0;
     margin: auto;
     background-color: white;
+    height: 40vh;
   }
 
+  ion-card-content {
+    max-height: 25vh;
+    overflow-y: scroll;
+  }
 
 .card-close-icon {
     font-size: 24px;
