@@ -2,9 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Storage } from '@ionic/storage';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
@@ -15,6 +14,7 @@ import { StorageMock } from '../../../testUtils/mocks/storage';
 
 import { CreateReviewPage } from './create-review.page';
 import { ApiService } from 'src/app/api.service';
+import reviews from 'src/testUtils/fixtures/reviews';
 
 describe('CreateReviewPage', () => {
   let component: CreateReviewPage;
@@ -48,10 +48,10 @@ describe('CreateReviewPage', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CreateReviewPage);
     component = fixture.componentInstance;
-    let rating = component.reviewForm.controls['rating'];
-    rating.setValue(0);
-    let comment = component.reviewForm.controls['comment'];
-    comment.setValue('');
+    //let rating = component.reviewForm.controls['rating'];
+    //rating.setValue(0);
+    //let comment = component.reviewForm.controls['comment'];
+    //comment.setValue('');
     fixture.detectChanges();
   });
 
@@ -69,6 +69,15 @@ describe('CreateReviewPage', () => {
     const page = fixture.nativeElement;
     const textarea = page.querySelectorAll('ion-textarea');
     expect(textarea.length).toEqual(1);
+  });
+
+  it('should have a textarea', () => {
+    const page = fixture.nativeElement;
+    const textarea = page.querySelectorAll('textarea');
+    let comment = component.reviewForm.controls['comment'];
+    comment.setValue(reviews[0].comment);
+    fixture.detectChanges();
+    expect(textarea.textContent).toContain(reviews[0].comment);
   });
 
   it('should have a submitBtn', () => {

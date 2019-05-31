@@ -38,4 +38,23 @@ describe('EditReviewPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have five radios', () => {
+    const page = fixture.nativeElement;
+    const radios = page.querySelectorAll('ion-radio');
+    expect(radios.length).toEqual(5);
+  });
+
+  it('should have a textarea', () => {
+    const page = fixture.nativeElement;
+    const textarea = page.querySelectorAll('ion-textarea');
+    expect(textarea.length).toEqual(1);
+  });
+
+  it('should have a submitBtn', () => {
+    const page = fixture.nativeElement;
+    const submitBtn = page.querySelectorAll('ion-button');
+    expect(submitBtn).toBeTruthy();
+  });
+
 });
