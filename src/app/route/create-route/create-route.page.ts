@@ -17,15 +17,14 @@ export class CreateRoutePage implements OnInit {
     private formBuilder: FormBuilder,
     private api: ApiService,
     private router: Router,
-    private storage: Storage) {
+    private storage: Storage) {}
+
+  ngOnInit() {
     this.routeForm = this.formBuilder.group({
       name: ['', Validators.required],
       description: [''],
       public: [false]
     })
-  }
-
-  ngOnInit() {
   }
 
   onSubmit() {

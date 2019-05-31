@@ -19,8 +19,7 @@ export class EditReviewPage implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private api: ApiService,
     private navCtrl: NavController,
-    private route: ActivatedRoute,
-    private storage: Storage) {
+    private route: ActivatedRoute) {
   }
 
   ngOnInit() {
