@@ -280,6 +280,11 @@ export class HomePage {
     this.showCompleted = false;
   }
 
+  closeFinish() {
+    this.closePopups();
+    this.api.unsetMyActiveRoute(this.userHref).subscribe(() => this.endRoute());
+  }
+
   handleFinishRoute() {
     this.showCompleted = true;
   }

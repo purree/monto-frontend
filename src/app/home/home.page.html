@@ -81,7 +81,7 @@
 <app-attraction-popup *ngIf="currentAttraction" (close)="closePopups($event)" (helpMeFind)="helpMeFind($event)"
   [attraction]="currentAttraction">
 </app-attraction-popup>
-<app-route-completed *ngIf="showCompleted" [activeRoute]="mapService.activeRoute" (close)="closePopups($event)">
+<app-route-completed *ngIf="showCompleted" [activeRoute]="mapService.activeRoute" (close)="closeFinish($event)">
 </app-route-completed>
 
 <div *ngIf="selectedAttraction">

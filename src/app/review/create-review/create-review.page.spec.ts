@@ -70,16 +70,7 @@ describe('CreateReviewPage', () => {
     const textarea = page.querySelectorAll('ion-textarea');
     expect(textarea.length).toEqual(1);
   });
-
-  it('should have a textarea', () => {
-    const page = fixture.nativeElement;
-    const textarea = page.querySelectorAll('textarea');
-    let comment = component.reviewForm.controls['comment'];
-    comment.setValue(reviews[0].comment);
-    fixture.detectChanges();
-    expect(textarea.textContent).toContain(reviews[0].comment);
-  });
-
+  
   it('should have a submitBtn', () => {
     const page = fixture.nativeElement;
     const submitBtn = page.querySelectorAll('ion-button');
