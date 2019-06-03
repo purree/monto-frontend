@@ -344,6 +344,33 @@ export class MapService {
         ]
       },
       {
+        "featureType": "road.arterial",
+        "elementType": "labels.text",
+        "stylers": [
+          {
+            "visibility": "on"
+          }
+        ]
+      },
+      {
+        "featureType": "road.highway",
+        "elementType": "labels.text",
+        "stylers": [
+          {
+            "visibility": "on"
+          }
+        ]
+      },
+      {
+        "featureType": "road.local",
+        "elementType": "labels.text",
+        "stylers": [
+          {
+            "visibility": "on"
+          }
+        ]
+      },
+      {
         "featureType": "water",
         "elementType": "labels.text",
         "stylers": [
